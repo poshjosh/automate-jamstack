@@ -1,0 +1,18 @@
+body, article{
+    background-color: #ffeedd;
+    color: #123456
+}
+
+/**
+* Some themes use box-shadow to add underline
+*/
+a{
+    text-decoration: none;
+    box-shadow: none;
+}
+
+.navArrow{
+	  color: navy;
+	  font-size: 1.5rem;
+	  font-weight: bold
+}

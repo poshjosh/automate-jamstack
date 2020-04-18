@@ -1,0 +1,11 @@
+ignore/
+.cache
+.aws
+.ssh
+npm-debug.log
+Dockerfile*
+docker-compose*
+.dockerignore
+.git
+.gitignore
+.vscode
