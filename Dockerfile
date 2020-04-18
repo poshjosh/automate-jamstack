@@ -28,10 +28,6 @@ RUN apk update && apk upgrade \
     && unzip '*.zip' -d /usr/local/bin \
     && rm *.zip
 
-#ARG SITE_DIR_NAME=default-site
-
-#ENV SITE_DIR_NAME=${SITE_DIR_NAME}
-
 # Set the working directory to override any set by base image
 # This will create the directory if it doesn't exist
 WORKDIR /
