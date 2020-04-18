@@ -1,9 +1,9 @@
 module.exports = {
   siteMetadata: {
-    title: `Poshjoshs-Blog-on-Software-Engineering`,
+    title: `Poshjosh's Blog on Software Engineering`,
     author: {
-      name: `Chinomso-Ikwuagwu`,
-      summary: `a-once-in-a-lifetime-opportunist`,
+      name: `Chinomso Ikwuagwu`,
+      summary: `in the spirit of power, love and a sound mind`,
     },
     description: `Poshjosh-Blog-on-Software-Engineering`,
     siteUrl: `https://poshjosh.github.io`,
@@ -60,11 +60,11 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `Poshjoshs-Blog`,
-        short_name: `Poshjoshs-Blog`,
+        name: `VAR_SITE_NAME`,
+        short_name: `Poshjosh's Blog`,
         start_url: `/`,
         background_color: `#eeeeee`,
-        theme_color: `#663399`,
+        theme_color: `VAR_SITE_THEME_COLOR`,
         display: `minimal-ui`,
         icon: `content/assets/site-icon.png`,
       },

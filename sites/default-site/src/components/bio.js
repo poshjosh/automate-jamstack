@@ -40,7 +40,9 @@ const Bio = () => {
     <div
       style={{
         display: `flex`,
-        marginBottom: rhythm(2.5),
+        marginBottom: rhythm(0.75),
+        background: `#eeddcc`,
+        verticalAlign: `center`,
       }}
     >
       <Image
@@ -49,6 +51,7 @@ const Bio = () => {
         style={{
           marginRight: rhythm(1 / 2),
           marginBottom: 0,
+          paddingBottom: 0,
           minWidth: 50,
           borderRadius: `100%`,
         }}
@@ -56,11 +59,18 @@ const Bio = () => {
           borderRadius: `50%`,
         }}
       />
-      <p>
-        <small>Written by</small> <strong>{author.name}</strong>&emsp;<tt>{author.summary}</tt>&emsp;
-        {` `}
+      <p
+        style={{
+          marginBottom: 0,
+          paddingBottom: 0,
+        }}
+      >
+        <span class="nobreak nooverflow">
+          <small>Written by</small>&emsp;<strong>{author.name}</strong>&emsp;<tt>{author.summary}</tt>&emsp;
+        </span>
+        <br/>
         <a href={`https://twitter.com/${social.twitter}`}>
-          Follow me on Twitter
+          <small class="nobreak">Follow me on Twitter</small>
         </a>
       </p>
     </div>

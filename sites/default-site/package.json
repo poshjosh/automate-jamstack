@@ -1,9 +1,9 @@
 {
-  "name": "Poshjoshs-Blog",
+  "name": "Poshjosh's Blog",
   "private": true,
   "description": "Poshjosh-Blog-on-Software-Engineering",
   "version": "0.0.1",
-  "author": "Chinomso-Ikwuagwu",
+  "author": "Chinomso Ikwuagwu",
   "bugs": {
     "url": "https://github.com/gatsbyjs/gatsby-starter-blog/issues"
   },
@@ -44,7 +44,7 @@
   },
   "homepage": "https://poshjosh.github.io",
   "keywords": [
-    "Poshjoshs-Blog", "blog", "poshjosh", "Chinomso-Ikwuagwu"
+    "Poshjosh's Blog", "blog", "poshjosh", "Chinomso Ikwuagwu"
   ],
   "license": "MIT",
   "main": "n/a",

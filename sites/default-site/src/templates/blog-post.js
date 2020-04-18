@@ -50,37 +50,37 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
             <footer>
               <Bio />
             </footer>
+            <nav>
+              <ul
+                style={{
+                  display: `flex`,
+                  flexWrap: `wrap`,
+                  justifyContent: `space-between`,
+                  listStyle: `none`,
+                  padding: 0,
+                }}
+              >
+                <li>
+                  {previous && (
+                    <Link to={previous.fields.slug} rel="prev">
+                      <span class="navArrow">&lt;</span>&emsp;{previous.frontmatter.title}
+                    </Link>
+                  )}
+                </li>
+                <li>
+                  {next && (
+                    <Link to={next.fields.slug} rel="next">
+                      {next.frontmatter.title}&emsp;<span class="navArrow">&gt;</span>
+                    </Link>
+                  )}
+                </li>
+              </ul>
+            </nav>
           </article>
           <div id="sideSection">
             <SideSection/>
           </div>
       </div>
-      <nav>
-        <ul
-          style={{
-            display: `flex`,
-            flexWrap: `wrap`,
-            justifyContent: `space-between`,
-            listStyle: `none`,
-            padding: 0,
-          }}
-        >
-          <li>
-            {previous && (
-              <Link to={previous.fields.slug} rel="prev">
-                <span class="navArrow">&lt;</span>&emsp;{previous.frontmatter.title}
-              </Link>
-            )}
-          </li>
-          <li>
-            {next && (
-              <Link to={next.fields.slug} rel="next">
-                {next.frontmatter.title}&emsp;<span class="navArrow">&gt;</span>
-              </Link>
-            )}
-          </li>
-        </ul>
-      </nav>
     </Layout>
   )
 }

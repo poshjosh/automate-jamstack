@@ -8,7 +8,6 @@ import { rhythm } from "../utils/typography"
 
 const BlogIndex = ({ data, location }) => {
   const siteTitle = data.site.siteMetadata.title
-  const author = data.site.siteMetadata.author
   const posts = data.allMarkdownRemark.edges
 
   return (
@@ -17,33 +16,39 @@ const BlogIndex = ({ data, location }) => {
       <br/>
       <Bio />
       <div id="indexContainer">
-        <h1>Blog Index</h1>
-        {posts.map(({ node }) => {
-          const title = node.frontmatter.title || node.fields.slug
-          return (
-            <article key={node.fields.slug}>
-              <header>
-                <h3
-                  style={{
-                    marginBottom: rhythm(1 / 4),
-                  }}
-                >
-                  <Link style={{ boxShadow: `none` }} to={node.fields.slug}>
-                    {title}
-                  </Link>
-                </h3>
-                <small>{node.frontmatter.date}</small>
-              </header>
-              <section>
-                <p
-                  dangerouslySetInnerHTML={{
-                    __html: node.frontmatter.description || node.excerpt,
-                  }}
-                />
-              </section>
-            </article>
-          )
-        })}
+        <h1
+          style={{
+            marginTop: 0,
+          }}
+        >Blog Index</h1>
+        <div id="indexSection">
+          {posts.map(({ node }) => {
+            const title = node.frontmatter.title || node.fields.slug
+            return (
+              <article key={node.fields.slug}>
+                <header>
+                  <h3
+                    style={{
+                      marginBottom: rhythm(1 / 4),
+                    }}
+                  >
+                    <Link style={{ boxShadow: `none` }} to={node.fields.slug}>
+                      {title}
+                    </Link>
+                  </h3>
+                  <small>{node.frontmatter.date}</small>
+                </header>
+                <section>
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: node.frontmatter.description || node.excerpt,
+                    }}
+                  />
+                </section>
+              </article>
+            )
+          })}
+        </div>
       </div>
     </Layout>
   )

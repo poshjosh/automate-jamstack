@@ -14,19 +14,8 @@ const Layout = ({ location, title, children }) => {
         style={{
           ...scale(1.5),
           textAlign: `center`,
-          marginBottom: rhythm(1.5),
-          margin: 0,
-          padding: 0,
-          border: 0,
-          padding: rhythm(5.0),
-          backgroundImage: "url(" + "https://img1.wsimg.com/isteam/stock/VJdp5Gd/:/rs=w:1360,h:580,cg:true,m/cr=w:1360,h:580,a:cc" + ")",
-          height: `50%`,
-          backgroundPosition: `center`,
-          backgroundRepeat: `no-repeat`,
-          backgroundSize: `cover`,
-          position: `relative`,
-          color: `white`,
-        }}
+          padding: rhythm(1.5),
+          background: `rgba(0, 0, 0, 0.3)`, /* Black background with 0.5 opacity */        }}
       >
         <Link
           style={{
@@ -45,17 +34,8 @@ const Layout = ({ location, title, children }) => {
         style={{
           textAlign: `center`,
           fontFamily: `Montserrat, sans-serif`,
-          margin: 0,
-          padding: 0,
-          border: 0,
-          padding: rhythm(5.0),
-          backgroundImage: "url(" + "https://img1.wsimg.com/isteam/stock/VJdp5Gd/:/rs=w:1360,h:580,cg:true,m/cr=w:1360,h:580,a:cc" + ")",
-          height: `50%`,
-          backgroundPosition: `center`,
-          backgroundRepeat: `no-repeat`,
-          backgroundSize: `cover`,
-          position: `relative`,
-          color: `white`,
+          padding: rhythm(1.0),
+          background: `rgba(0, 0, 0, 0.2)`,
         }}
       >
         <Link
@@ -78,7 +58,20 @@ const Layout = ({ location, title, children }) => {
         marginTop: 0,
       }}
     >
-      <header>{header}</header>
+      <header
+        style={{
+          margin: 0,
+          border: 0,
+          padding: rhythm(5.0),
+          backgroundImage: "url(https://img1.wsimg.com/isteam/stock/VJdp5Gd/:/rs=w:1360,h:580,cg:true,m/cr=w:1360,h:580,a:cc)",
+          height: `50%`,
+          backgroundPosition: `center`,
+          backgroundRepeat: `no-repeat`,
+          backgroundSize: `cover`,
+          position: `relative`,
+          color: `white`,
+        }}
+      >{header}</header>
       <main>{children}</main>
       <footer>
         &copy; {new Date().getFullYear()}
