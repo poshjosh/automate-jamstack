@@ -5,6 +5,9 @@ import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { rhythm, scale } from "../utils/typography"
+import SideSection from "../components/side-section"
+
+import "../components/layout.css"
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
   const post = data.markdownRemark
@@ -17,29 +20,41 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         title={post.frontmatter.title}
         description={post.frontmatter.description || post.excerpt}
       />
-      <article>
-        <header>
-          <p
-            style={{
-              ...scale(-1 / 5),
-              display: `block`,
-              marginBottom: rhythm(1),
-            }}
-          >
-            {post.frontmatter.date}
-          </p>
-        </header>
-        <section dangerouslySetInnerHTML={{ __html: post.html }} />
-        <hr
-          style={{
-            marginBottom: rhythm(1),
-          }}
-        />
-        <footer>
-          <Bio />
-        </footer>
-      </article>
-
+      <div id="sectionContainer">
+          <article id="centerSection">
+            <header>
+              <h1
+                style={{
+                  marginTop: rhythm(0.25),
+                  marginBottom: 0,
+                }}
+              >
+                {post.frontmatter.title}
+              </h1>
+              <p
+                style={{
+                  ...scale(-1 / 5),
+                  display: `block`,
+                  marginBottom: rhythm(1),
+                }}
+              >
+                {post.frontmatter.date}
+              </p>
+            </header>
+            <section dangerouslySetInnerHTML={{ __html: post.html }} />
+            <hr
+              style={{
+                marginBottom: rhythm(1),
+              }}
+            />
+            <footer>
+              <Bio />
+            </footer>
+          </article>
+          <div id="sideSection">
+            <SideSection/>
+          </div>
+      </div>
       <nav>
         <ul
           style={{
