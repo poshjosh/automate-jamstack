@@ -5,8 +5,8 @@ source ./setup-scripts/functions-page.sh
 source ./setup-scripts/functions-util.sh
 source ./setup-scripts/functions.sh
 
-echo "$(date) - [ Beginning setup ] - Build no 289"
-if [ "$VERBOSE" = true ]; then
+echo "$(date) - [ Beginning setup ] - Build no 298"
+if [ "$VERBOSE" = false ]; then
     env
     echo "============================================"
 fi
@@ -119,11 +119,11 @@ update_cfgs() {
     # SITE_AUTHOR_SUMMARY must come before SITE_AUTHOR to avoid partial
     # replacement of SITE_AUTHOR_SUMMARY
     #
-    custom_find_and_replace VAR_SITE_AUTHOR_SUMMARY $SITE_AUTHOR_SUMMARY
-    custom_find_and_replace VAR_SITE_AUTHOR $SITE_AUTHOR
+    custom_find_and_replace VAR_SITE_AUTHOR_SUMMARY "$SITE_AUTHOR_SUMMARY"
+    custom_find_and_replace VAR_SITE_AUTHOR "$SITE_AUTHOR"
 
-    custom_find_and_replace AWS_S3_BUCKET_NAME_PREFIX $AWS_S3_BUCKET_NAME_PREFIX
-    custom_find_and_replace AWS_S3_BUCKET_NAME $AWS_S3_BUCKET_NAME
+    custom_find_and_replace VAR_AWS_S3_BUCKET_NAME_PREFIX "$AWS_S3_BUCKET_NAME_PREFIX"
+    custom_find_and_replace VAR_AWS_S3_BUCKET_NAME "$AWS_S3_BUCKET_NAME"
 
     local temp_env_file=$(mktemp)
 
@@ -141,12 +141,12 @@ update_cfgs() {
         # Using delimiter `=`, split this, collect second part
         local pair_val=$(echo $kv_pair | cut -d= -f 2)
 
-        custom_find_and_replace "VAR_$pair_key" $pair_val
+        custom_find_and_replace "VAR_$pair_key" "$pair_val"
 
         if [ -z ${pair_val+x} ] || [ "$pair_val" == '' ]; then
             echo "Value not set for VAR_$pair_key"
         else
-            find_and_replace_text_in_dir_mirror "terraform" ${site_terraform_dir} "VAR_$pair_key" $pair_val
+            find_and_replace_text_in_dir_mirror "terraform" ${site_terraform_dir} "VAR_$pair_key" "$pair_val"
         fi
     done < $temp_env_file
 

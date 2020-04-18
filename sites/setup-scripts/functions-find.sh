@@ -48,7 +48,7 @@ backup_and_replace_files() {
 # arg 3 - replacement
 #
 find_and_replace_text_in_file() {
-    sed -i "s^${2}^${3}^g" $1 && echo "  Updated all ${2} to ${3} in $1"
+    sed -i "s^${2}^${3}^g" $1 && trace "  Updated all ${2} to ${3} in $1"
 }
 
 # arg 1 - target dir
@@ -106,7 +106,9 @@ find_and_replace_text_in_dir_mirror() {
 
             local tgtname=$(echo ${item} | sed -e "s^/${src}/^/${tgt}/^g")
 
-            find_and_replace_text_in_file $tgtname ${3} ${4}
+            echo "find_and_replace_text_in_dir_mirror $1, $2, $3 = $4"
+
+            find_and_replace_text_in_file $tgtname "${3}" "${4}"
         done
     else
         trace "One or more of the directories not found. Find and replace will not be carried out for $tgt."
@@ -115,11 +117,13 @@ find_and_replace_text_in_dir_mirror() {
 
 custom_find_and_replace() {
 
+    trace "custom_find_and_replace $1 = $2"
+
     if [ -z ${2+x} ] || [ "$2" == '' ]; then
         trace "Value not set for $1"
     else
         #@TODO ensure replacement took place by serching for the variable that
         # was replaced
-        find_and_replace_text_in_dir_mirror "site-root/${SITE_DIR_NAME}" ${SITE_DIR_NAME} $1 $2
+        find_and_replace_text_in_dir_mirror "site-root/${SITE_DIR_NAME}" ${SITE_DIR_NAME} "$1" "$2"
     fi
 }

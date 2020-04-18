@@ -85,7 +85,7 @@ add_frontmatter_to_markdown() {
             && found_frontmatter=true || found_frontmatter=false
 
         if [ "$found_frontmatter" = true ]; then
-            echo "Found frontmatter in: $fname"
+            trace "Found frontmatter in: $fname"
         else
             (echo $item | add_frontmatter $fname)
         fi
