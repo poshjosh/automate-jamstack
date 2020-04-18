@@ -15,7 +15,17 @@ const Layout = ({ location, title, children }) => {
           ...scale(1.5),
           textAlign: `center`,
           marginBottom: rhythm(1.5),
-          marginTop: 0,
+          margin: 0,
+          padding: 0,
+          border: 0,
+          padding: rhythm(5.0),
+          backgroundImage: "url(" + "https://img1.wsimg.com/isteam/stock/VJdp5Gd/:/rs=w:1360,h:580,cg:true,m/cr=w:1360,h:580,a:cc" + ")",
+          height: `50%`,
+          backgroundPosition: `center`,
+          backgroundRepeat: `no-repeat`,
+          backgroundSize: `cover`,
+          position: `relative`,
+          color: `white`,
         }}
       >
         <Link
@@ -35,7 +45,17 @@ const Layout = ({ location, title, children }) => {
         style={{
           textAlign: `center`,
           fontFamily: `Montserrat, sans-serif`,
-          marginTop: 0,
+          margin: 0,
+          padding: 0,
+          border: 0,
+          padding: rhythm(5.0),
+          backgroundImage: "url(" + "https://img1.wsimg.com/isteam/stock/VJdp5Gd/:/rs=w:1360,h:580,cg:true,m/cr=w:1360,h:580,a:cc" + ")",
+          height: `50%`,
+          backgroundPosition: `center`,
+          backgroundRepeat: `no-repeat`,
+          backgroundSize: `cover`,
+          position: `relative`,
+          color: `white`,
         }}
       >
         <Link
@@ -55,7 +75,7 @@ const Layout = ({ location, title, children }) => {
       style={{
         marginLeft: `auto`,
         marginRight: `auto`,
-        padding: `${rhythm(1.5)} ${rhythm(3 / 4)}`,
+        marginTop: 0,
       }}
     >
       <header>{header}</header>
