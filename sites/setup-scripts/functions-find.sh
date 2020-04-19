@@ -3,7 +3,8 @@
 source ./setup-scripts/functions-util.sh
 
 # arg 1 - source dir
-#         Files in the source dir will overwrite files in target dir
+#         Files in the source dir will overwrite files in target dir, only if
+#         source and target directories are different
 #
 # arg 2 - target dir
 #         Files in the target dir will be backed up ONLY if a backup does not
@@ -37,8 +38,12 @@ backup_and_replace_files() {
 
         # Update original with custom
         #
-        printf "Copying: %1s to: %2s\n" $item $tgtname
-        cp $item $tgtname
+        if [ "$item" == "$tgtname" ]; then
+            printf "Skipping copy, as source and destination are the same. %s\n" $item
+        else
+            printf "Copying: %1s to: %2s\n" $item $tgtname
+            cp $item $tgtname
+        fi
 
     done
 }
@@ -48,7 +53,14 @@ backup_and_replace_files() {
 # arg 3 - replacement
 #
 find_and_replace_text_in_file() {
-    sed -i "s^${2}^${3}^g" $1 && trace "  Updated all ${2} to ${3} in $1"
+
+    if [ -z ${3+x} ] || [ "${3}" == '' ]; then
+        trace "Replacement not available for: ${2}"
+    else
+        #@TODO ensure replacement took place by serching for the variable that
+        # was replaced
+        sed -i "s^${2}^${3}^g" $1 && trace "  Updated all ${2} to ${3} in $1"
+    fi
 }
 
 # arg 1 - target dir
