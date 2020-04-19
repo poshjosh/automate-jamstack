@@ -70,7 +70,7 @@ check_site_imported() {
     else
         is_site_imported='n';
     fi
-    echo "Is site imported: $is_site_imported"
+    echo "Site is imported: $is_site_imported"
     echo $is_site_imported
 }
 
@@ -81,6 +81,88 @@ if [ "${is_site_imported}" = 'n' ] || [ "$REFRESH" = true ]; then
     if [ -d "./$SITE_DIR_NAME" ]; then rm -Rf "./$SITE_DIR_NAME"; fi
 
     import_site
+fi
+
+is_site_pages_imported='n'
+site_pages_loc="${SITE_DIR}${SITE_PAGES_DIR}"
+check_site_pages_imported() {
+    if [ -d "$site_pages_loc" ] && [ "$(ls -A $site_pages_loc)" ]; then
+        is_site_pages_imported='y'
+    else
+        is_site_pages_imported='n';
+    fi
+    echo "Site pages are imported: $is_site_pages_imported"
+    echo $is_site_pages_imported
+}
+
+check_site_pages_imported
+
+import_site_pages() {
+
+    local msg=''
+
+    if [ ! -d "${site_pages_loc}" ]; then
+        "Creating directory: ${site_pages_loc}"
+        mkdir -p ${site_pages_loc}
+    fi
+
+    if [[ ${SITE_PAGES_SOURCE} == http* ]]; then
+
+        msg="Downloading site pages from: ${SITE_PAGES_SOURCE}"
+        echo "${msg}"
+
+        if [[ ${SITE_PAGES_SOURCE} == *.git ]]; then
+
+            msg="Clonging site pages from into: ${1}"
+            echo "${msg}"
+
+            git clone ${SITE_PAGES_SOURCE} ${1} && echo "    SUCCESS: $msg" || echo "    ERROR: $msg"
+
+            rm *.git
+
+        else
+
+            curl -LO $SITE_PAGES_SOURCE && echo "    SUCCESS: $msg" || echo "    ERROR: $msg"
+
+            echo "Listing current directory: ${1}"
+
+            (cd ${1} && ls -a)
+
+            if [[ ${SITE_PAGES_SOURCE} == *.zip ]]; then
+
+                msg="Unzipping downloaded site pages into: ${1}"
+                echo "${msg}"
+
+
+                exit 1
+
+                unzip '*.zip' -d ${1} && echo "    SUCCESS: $msg" || echo "    ERROR: $msg"
+
+                rm *.zip
+            fi
+        fi
+    else
+
+        msg="Copying site pages from ${SITE_PAGES_SOURCE} to ${1}"
+        echo "${msg}"
+
+        echo "Listing content of site pages source: ${SITE_PAGES_SOURCE}"
+
+        (cd ${SITE_PAGES_SOURCE} && ls -a)
+
+        cp "${SITE_PAGES_SOURCE}/." ${1} && echo "    SUCCESS: $msg" || echo "    ERROR: $msg"
+    fi
+
+    echo "Listing content of site pages directory: ${1}"
+
+    (cd ${1} && ls -a)
+}
+
+if [ "${is_site_pages_imported}" = 'n' ] || [ "$REFRESH_SITE_PAGES" = true ]; then
+
+    if [ -d "$site_pages_loc" ]; then rm -Rf "$site_pages_loc"; fi
+
+    import_site_pages ${site_pages_loc}
 fi
 
 install_plugin() {
@@ -106,6 +188,11 @@ echo 'Updating configuration'
 site_terraform_dir="./site-terraform/${SITE_DIR_NAME}"
 
 update_cfgs() {
+
+    if [ "${SITE_DIR_NAME}" != 'default-site' ]; then
+        mkdir -p "./site-root/${SITE_DIR_NAME}"
+        cp "/site-root/default-site/." "./site-root/${SITE_DIR_NAME}"
+    fi
 
     echo "Updating configuration in $SITE_DIR_NAME"
 
@@ -143,11 +230,8 @@ update_cfgs() {
 
         custom_find_and_replace "VAR_$pair_key" "$pair_val"
 
-        if [ -z ${pair_val+x} ] || [ "$pair_val" == '' ]; then
-            echo "Value not set for VAR_$pair_key"
-        else
-            find_and_replace_text_in_dir_mirror "terraform" ${site_terraform_dir} "VAR_$pair_key" "$pair_val"
-        fi
+        find_and_replace_text_in_dir_mirror "terraform" ${site_terraform_dir} "VAR_$pair_key" "$pair_val"
+
     done < $temp_env_file
 
     rm -f $temp_env_file
