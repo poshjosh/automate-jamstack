@@ -1,5 +1,6 @@
 ignore/
-.cache
+DEVELOPER_NOTES.md
+TODO.md
 .aws
 .ssh
 npm-debug.log
