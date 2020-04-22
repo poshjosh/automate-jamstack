@@ -28,18 +28,16 @@ RUN apk update && apk upgrade \
     && unzip '*.zip' -d /usr/local/bin \
     && rm *.zip
 
+VOLUME /app
+
 # Set the working directory to override any set by base image
 # This will create the directory if it doesn't exist
 WORKDIR /
 
-RUN yarn global add fs-extra gatsby-cli
+COPY ./app/ ./app/
 
-# Copy the content into the sites directory. The previously added "node_modules"
-# directory will not be overridden.
-COPY ./sites/ ./sites/
+RUN (cd ./app && yarn global add gatsby-cli)
 
-COPY ./docker-entrypoint.sh .
+RUN chmod +x ./app/config/setup-scripts/docker-entrypoint.sh
 
-RUN chmod +x ./docker-entrypoint.sh
-
-ENTRYPOINT ["./docker-entrypoint.sh"]
+ENTRYPOINT ["./app/config/setup-scripts/docker-entrypoint.sh"]
