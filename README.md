@@ -1,6 +1,8 @@
 ### Automate the deployment of markdown content as a static website to cloud based infrastructure ###
 
-This application will help publish your markdown pages as a static website built with javascript and HTML effortlessly. Really at the click of a file. All you need are:
+This application will help publish your markdown pages as a static website
+built with javascript and HTML effortlessly. Really at the click of a file.
+All you need are:
 
 - An Amazon account (access key and secret key)
 
@@ -8,58 +10,38 @@ This application will help publish your markdown pages as a static website built
 
 Caveat: _You need to have [docker](https://www.docker.com/) installed._
 
+For more information on what `markdown` is scroll to the `markdown` section below
+
 ### Direct Usage ###
 
-No need to build/compile anything here. But we need to set some properties first
-so create a file called `sites/default-site.env` and place it in the directory
-`sites`. Add the following properties for a start.
-_Fill in values were they have been ommitted_
+To create a new blog named `my-awesome-blog`:
+
+- Create a properties file in the `/app/sites` directory. The file should be named
+after the name of the site you are creating `my-awesome-blog.env`.
+
+- Site names should be restricted to letters, digits, underscores and hypens.
+
+- Copy contents of `/app/config/site-data/default-properties.properties` into
+the properties file (`/app/sites/my-awesome-blog.env`) you just created.
+
+- Edit/Update the relevant properties in your properties file (`/app/sites/my-awesome-blog.env`).
+
+- You need to provide values for at least these 3 properties
 
 ```
 AWS_ACCESS_KEY=[VALUE REQUIRED]
 AWS_SECRET_KEY=[VALUE REQUIRED]
-AWS_S3_BUCKET_NAME=[VALUE REQUIRED]
 AWS_REGION=[VALUE REQUIRED]
-SITE_URL=https://poshjosh.github.io
-AWS_S3_BUCKET_NAME_PREFIX=poshjosh-s3
-PROFILE=dev
-SITE_BACKGROUND_COLOR=#eeeeee
-SITE_TWITTER_HANDLE=Chinomso
-SITE_SOURCE=https://github.com/gatsbyjs/gatsby-starter-blog
-SITE_MAX_WIDTH=590
-SITE_TITLE=Poshjoshs-Blog-on-Software-Engineering
-SITE_SHORT_NAME=Poshjoshs-Blog
-SITE_HOME_PAGE=https://poshjosh.github.io
-SITE_THEME_COLOR=#663399
-SITE_ISSUES_URL=https://github.com/gatsbyjs/gatsby-starter-blog/issues
-SITE_LINKS_TO_REPLACE=https://poshjosh.github.io
-SITE_AUTHOR=Chinomso-Ikwuagwu
-REFRESH=false
-SITE_AUTHOR_SUMMARY=a-once-in-a-lifetime-opportunist
-# Must not start with forward slash /
-SITE_ICON_LOCATION=content/assets/site-icon.png
-SITE_DIR_NAME=default-site
-SITE_LINKS_REPLACEMENT=
-SITE_PAGES_DIR=/content/blog
-SITE_ASSETS_DIR=/content/assets
-AWS_OUTPUT=json
-SITE_NAME=Poshjoshs-Blog
-APP_PORT=8000
-SITE_REPOSITORY_TYPE=git
-SITE_DESCRIPTION=Poshjosh-Blog-on-Software-Engineering
-SITE_REPOSITORY_URL=git+https://github.com/gatsbyjs/gatsby-starter-blog.git
-VERBOSE=false
-AWS_UPDATE_S3_BUCKET=true
 ```
 
-Now you are ready to get going. Just open a terminal/command prompt and
+- Now you are ready to get going. Just open a terminal/command prompt and
 type the following command:
 
 ```
 $ docker run --name poshjosh-automate-jamstack -it --rm -v "%cd%/site":/site -p 8000:8000 poshjosh/automate-jamstack
 ```
 
-Now browse to http://localhost:8000 to view you website on your local machine.
+- Browse to http://localhost:8000 to view you website on your local machine.
 
 If your browser complains with an error message like the following. You may need
 to relax any restrictions you switch on in the browser, particularly regarding javascript.
@@ -77,10 +59,65 @@ SecurityError: The operation is insecure. app.js:41
 I set tough privacy restrictions on my firefox and go the above error. So I opened another
 browser (microsoft Edge) and ```Hello World``` was displayed
 
-After basking in your first success. Take time out to read the advanced section
-which follows.  
+- After basking in your first success. Take time out to read the advanced section
+below.  
 
-For useful links, see the reference section at the end of the page
+- For useful links, see the reference section at the end of the page
+
+### Tips for writing blog content ###
+
+This application will help publish your markdown pages as a static website built
+with javascript and HTML.
+
+### What is Markdown ####
+
+Markdown is a markup language written in plain text format. It allows you to
+add structure and style to your content with more ease than permissible
+with html (another markup language). Markdown is a format of writing. Markdown
+files end with `.md`.
+
+Well composed markdown documents contain front matter.
+
+### Front matter ###
+
+- Add `frontmatter` at the topmost of all your pages. `Frontmatter` starts with
+a single line of 3 hyphens `---` and ends with same. Example of `frontmatter`
+
+```
+---
+path: "./README.md"
+date: "2019-11-11"
+title: "README"
+description: "Usage instructions"
+lang: "en-us"
+---
+```
+
+### Linking to other markdown ####
+
+```
+  └───blog/
+      └───2010/
+      │   │─  page1.md
+      │   └─  page2.md
+      │
+      └───2011/
+          └─  page3.md
+```
+
+Given the above structure, to link to `/blog/2011/page3.md` from
+`/blog/2010/page1.md` simply enter `/blog/2011/page3`. No `.md` extension.
+
+__Correct__
+
+- `/blog/2011/page3`
+
+__Wrong__
+
+- `/blog/2011/page3.md`    <- .md
+- `./blog/2011/page3`      <- single preceding dot
+- `blog/2011/page3.md`     <- no preceding forward slash and .md
+- `../blog/2011/page3`     <- double preceding dots
 
 ### For more advanced users ###
 
