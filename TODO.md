@@ -8,19 +8,6 @@
   when the name becomes available
 ------------------------------
 
-* Add more front matter
-  lang: en-us
-  tags: [software, hardware, kitchenware, beware]
-
-* Add more typographies. These have been added to package.json already. All
-you need to do now is add the following line, to the Dockerfile next time you
-build the image.
-
-```
-yarn global add typography-theme-fairy-gates  typography-theme-lincoln \
-     typography-theme-grand-view typography-theme-twin-peaks
-```
-
 * READ this to properly manage terraform state:
 https://blog.gruntwork.io/how-to-manage-terraform-state-28f5697e68fa
 
