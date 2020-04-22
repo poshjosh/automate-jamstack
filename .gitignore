@@ -1,9 +1,8 @@
 # Gitignore for a Terraform, Nodejs, Gatsby etc file
 
 # Added by me
-chinomsoikwuagwu.com/
+app/sites/
 ignore/
-**/content/blog/
 
 # ################### Terraform ##################
 
