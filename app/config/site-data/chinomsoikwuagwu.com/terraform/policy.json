@@ -1,0 +1,15 @@
+{
+    "Id": "PolicyForPublicWebsiteContent",
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Stmt1587051593500",
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Effect": "Allow",
+            "Resource": "arn:aws:s3:::chinomsoikwuagwu.com/*",
+            "Principal": "*"
+        }
+    ]
+}
