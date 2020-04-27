@@ -257,9 +257,9 @@ update_terraform_cfgs() {
 
         find_and_replace_variables
 
-        echo "  SUCCESS: Updated terraform configuration"
+        echo "    SUCCESS: Updated terraform configuration"
     else
-         echo "  ERROR: Not updated - terraform configuration"
+         echo "    ERROR: Not updated - terraform configuration"
     fi
 }
 
@@ -275,7 +275,7 @@ create_or_update_s3_bucket() {
 
     printloc
 
-    if [ "$virgin" = true ] || [ "$AWS_UPDATE_S3_BUCKET" = true ]; then
+    if [ "$virgin" = true ] || [ "$AWS_S3_UPDATE_BUCKET" = true ]; then
 
         local msginit='Intializing s3 bucket provisioner'
         echo $msginit
