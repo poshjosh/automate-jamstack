@@ -19,6 +19,12 @@ To create a new blog named `my-awesome-blog`:
 - Create a properties file in the `/app/sites` directory. The file should be named
 after the name of the site you are creating `my-awesome-blog.env`.
 
+```
+  └───app/
+      └───sites/
+          └───my-awesome-blog.env
+```
+
 - Site names should be restricted to letters, digits, underscores and hypens.
 
 - Copy contents of `/app/config/site-data/default-properties.properties` into
@@ -37,8 +43,32 @@ AWS_REGION=[VALUE REQUIRED]
 - Now you are ready to get going. Just open a terminal/command prompt and
 type the following command:
 
+### Use a custom domain name ###
+
+_This section only applies if you wish to use a custom domain name. Otherwise
+skip to the next section_
+
+If you wish to use a custom domain name e.g `my-awesome-blog` rather than
+amazon allocated domain name e.g `<bucket-name>.s3-website.<region>.amazonaws.com`
+then:
+
+- Use your custom domain name as a bucket name e.g `my-awesome-blog.com`
+
+- Login to amazon Route53
+
+- Create a hosted zone with name `my-awesome-blog.com` and take note of
+the ID of the newly created hosted zone. Also take not of all the name servers.
+E.g `ns-131.awsdns-16.com`
+
+- Copy your name servers and use them to update the nameservers of your
+domain service. The service where you purchased your domain name `my-awesome-blog.com`
+
+- Run the app
+
+### Run the app ###
+
 ```
-$ docker run --name poshjosh-automate-jamstack -it --rm -v "%cd%/site":/site -p 8000:8000 poshjosh/automate-jamstack
+$ docker run --name poshjosh-automate-jamstack -it --rm -v "%cd%/app":/app -p 8000:8000 poshjosh/automate-jamstack
 ```
 
 - Browse to http://localhost:8000 to view you website on your local machine.
