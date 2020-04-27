@@ -6,7 +6,7 @@
 # Variables may be included here
 # Both directories and files are allowed
 #
-./config/site-data/${SITE_DIR_NAME}/terraform/main.tf
-./config/site-data/${SITE_DIR_NAME}/terraform/policy.json
+./config/site-data/${SITE_DIR_NAME}/terraform/variables.tf
+#./config/site-data/${SITE_DIR_NAME}/terraform/policy.json
 ./sites/${SITE_DIR_NAME}/gatsby-config.js
 ./sites/${SITE_DIR_NAME}/package.json
