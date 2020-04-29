@@ -5,6 +5,7 @@
 g_config_dir="./config"
 g_scripts_dir="${g_config_dir}/setup-scripts"
 g_data_dir="${g_config_dir}/site-data"
+g_pandoc_template_file="$g_data_dir/pandoc-template.markdown"
 g_site_data_dir="${g_data_dir}/${SITE_DIR_NAME}"
 g_terraform_dir="${g_config_dir}/terraform"
 g_site_terraform_dir="${g_site_data_dir}/terraform"
@@ -312,8 +313,13 @@ update_pages() {
     local backupdir="${g_site_dir}/backups${SITE_PAGES_DIR}"
 
     if [ -d "${pagesdir}" ]; then
+      
         add_frontmatter_to_markdown ${pagesdir}
         update_markdown_links ${pagesdir} ${backupdir}
+
+        if [ "$PAGE_ADD_TABLE_OF_CONTENT" = true ]; then
+            add_tableofcontents_to_markdown ${pagesdir} $g_pandoc_template_file
+        fi
     fi
 }
 

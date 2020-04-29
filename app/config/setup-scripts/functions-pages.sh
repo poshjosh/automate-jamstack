@@ -2,6 +2,37 @@
 
 source ${g_scripts_dir}/functions-util.sh
 
+add_tableofcontents_to_markdown() {
+
+    echo "Adding table of contents to all .md files in ${1}"
+
+    local files=$(find ${1} -iname '*.md' -type f)
+
+    for item in ${files[*]}
+    do
+
+        trace $item
+
+        local fname=$(echo $item)
+
+        trace "Adding table of contents to: $fname"
+
+        local toc_heading=$PAGE_TABLE_OF_CONTENT_HEADING
+
+        if [ -z "$2" ]; then
+            pandoc -s --toc -o $fname $fname
+        else
+            if [ -z "$toc_heading" ] || [ "$toc_heading" == '' ]; then
+                echo "    WARNING. Property PAGE_TABLE_OF_CONTENT_HEADING not found. Heading will not be added to table of content"
+                pandoc -s --toc -o $fname $fname
+            else
+                # Put values in quote for toc-title and template
+                pandoc -s --toc --variable toc-title:"$toc_heading" --template="$2" -o $fname $fname
+            fi
+        fi
+    done
+}
+
 add_frontmatter() {
 
     trace "add_frontmatter $1"
@@ -87,7 +118,7 @@ add_frontmatter_to_markdown() {
         if [ "$found_frontmatter" = true ]; then
             trace "Found frontmatter in: $fname"
         else
-            (echo $item | add_frontmatter $fname)
+            add_frontmatter $fname
         fi
     done
 }
