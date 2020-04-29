@@ -1,8 +1,8 @@
 ### Automate the deployment of markdown content as a static website to cloud based infrastructure ###
 
-This application will help publish your markdown pages as a static website
-built with javascript and HTML effortlessly. Really at the click of a file.
-All you need are:
+This application will help publish your [markdown](https://en.wikipedia.org/wiki/Markdown)
+pages as a static website built with javascript and HTML effortlessly. Really
+at the click of a file. All you need are:
 
 - An Amazon account (access key and secret key)
 
@@ -96,15 +96,16 @@ below.
 
 ### Tips for writing blog content ###
 
-This application will help publish your markdown pages as a static website built
-with javascript and HTML.
+This application will help publish your [markdown](https://en.wikipedia.org/wiki/Markdown)
+pages as a static website built with javascript and HTML.
 
 ### What is Markdown ####
 
-Markdown is a markup language written in plain text format. It allows you to
-add structure and style to your content with more ease than permissible
-with html (another markup language). Markdown is a format of writing. Markdown
-files end with `.md`.
+[Markdown](https://en.wikipedia.org/wiki/Markdown) is a markup language written
+in plain text format. It allows you to add structure and style to your content
+with more ease than permissible with html (another markup language). Markdown
+is a format of writing. Markdown files end with `.md`. [Click here for some
+common markdown](https://commonmark.org/help/)
 
 Well composed markdown documents contain front matter.
 
@@ -148,6 +149,25 @@ __Wrong__
 - `./blog/2011/page3`      <- single preceding dot
 - `blog/2011/page3.md`     <- no preceding forward slash and .md
 - `../blog/2011/page3`     <- double preceding dots
+
+### Markdown Foot Notes ###
+
+Standard Markdown doesn't support footnotes, but you can manually add footnotes
+with superscript tags, e.g. <sup>1</sup>.
+
+You can make the footnote links clickable as well.
+
+- First define the footnote at the bottom like this
+
+```
+<a name="myfootnote1">1</a>: Footnote content goes here
+```
+
+- Then reference it at some other place in the document like this
+
+```
+<sup>[1](#myfootnote1)</sup>
+```
 
 ### For more advanced users ###
 
@@ -221,7 +241,14 @@ from `PROFILE=dev` to production `PROFILE=prod`
 
 ### References ###
 
+Markdown
+
+- [Wikipedia - Markdown](https://en.wikipedia.org/wiki/Markdown)
+
+- [Commonmark.org](https://commonmark.org/help/)
+
 Gatsby
+
 - [Gatsbyjs - Add global CSS](https://www.gatsbyjs.org/docs/global-css/)
 
 - [Gatsbyjs - Deploying to Amazon S3](https://www.gatsbyjs.org/docs/deploying-to-s3-cloudfront/)
