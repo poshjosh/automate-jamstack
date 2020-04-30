@@ -32,16 +32,39 @@ the properties file (`/app/sites/my-awesome-blog.env`) you just created.
 
 - Edit/Update the relevant properties in your properties file (`/app/sites/my-awesome-blog.env`).
 
-- You need to provide values for at least these 3 properties
+- You need to provide values for at least these 4 properties
 
-```
-AWS_ACCESS_KEY=[VALUE REQUIRED]
-AWS_SECRET_KEY=[VALUE REQUIRED]
-AWS_REGION=[VALUE REQUIRED]
-```
+  * AWS access key:
+  ```
+  AWS_ACCESS_KEY=[VALUE REQUIRED]
+  ```
 
-- Now you are ready to get going. Just open a terminal/command prompt and
-type the following command:
+  * AWS secret key:
+  ```
+  AWS_SECRET_KEY=[VALUE REQUIRED]
+  ```
+
+  * AWS region
+  ```
+  AWS_REGION=[VALUE REQUIRED]
+  ```
+  The AWS region for the account you want the S3 bucket to be created in e.g
+  `us-east-1`, `us-east-2`, `us-west-` etc
+
+  * Location of markdown pages
+  ```
+  SITE_PAGES_SOURCE=[VALUE REQUIRED]
+  ```
+  The location where your markdown pages are. It could be:
+
+    - Remote zip file e.g: https://github.com/poshjosh/project-name/archive/master.zip
+
+    - Remote git repo e.g: https://github.com/poshjosh/project-name.git  
+
+    - Local directory e.g: `/my/site-pages/directory`
+    Local directory needs to be located within the `/app` directory
+
+- Now you are ready to get going.
 
 ### Use a custom domain name ###
 
@@ -60,34 +83,32 @@ then:
 the ID of the newly created hosted zone. Also take not of all the name servers.
 E.g `ns-131.awsdns-16.com`
 
+- Use the ID of the hosted zone you just created to update the property
+`AWS_HOSTED_ZONE_ID` in the property file `/app/sites/my-awesome-blog.env`
+
 - Copy your name servers and use them to update the nameservers of your
-domain service. The service where you purchased your domain name `my-awesome-blog.com`
+domain service - the service eg (godaddy, namecheap etc) where you purchased
+your domain name (`my-awesome-blog.com`).
 
 - Run the app
 
 ### Run the app ###
 
+- Just open a terminal/command prompt and type the following command, windows:
+
 ```
 $ docker run --name poshjosh-automate-jamstack -it --rm -v "%cd%/app":/app -p 8000:8000 poshjosh/automate-jamstack
 ```
 
-- Browse to http://localhost:8000 to view you website on your local machine.
-
-If your browser complains with an error message like the following. You may need
-to relax any restrictions you switch on in the browser, particularly regarding javascript.
-Otherwise, try other browsers.
+- And for linux:
 
 ```
-Failed to get service worker registration(s): Storage access is restricted in this context due to user settings or private browsing mode. app.js:41
-[HMR] connected client.js:95
-SecurityError: The operation is insecure. app.js:41
-404 page could not be found. Checkout https://www.gatsbyjs.org/docs/add-404-page/ index.js:2177
-    __stack_frame_overlay_proxy_console__ index.js:2177
-    loadPageDataJson dev-loader.js:28
-```    
+$ docker run --name poshjosh-automate-jamstack -it --rm -v "$pwd/app":/app -p 8000:8000 poshjosh/automate-jamstack
+```
 
-I set tough privacy restrictions on my firefox and go the above error. So I opened another
-browser (microsoft Edge) and ```Hello World``` was displayed
+- Browse to http://localhost:8000 to view you website on your local machine.
+
+- See the section on troubleshooting if you encounter problems.
 
 - After basking in your first success. Take time out to read the advanced section
 below.  
@@ -238,6 +259,26 @@ VERBOSE - Causes a more verbose log
 
 Change the profile property in the `sites/default-site.env` file you created earlier
 from `PROFILE=dev` to production `PROFILE=prod`  
+
+### Troubleshooting ###
+
+**Unable to view site in browser at http://localhost:8000**
+
+If your browser complains with an error message like the following. You may need
+to relax any restrictions you switch on in the browser, particularly regarding javascript.
+Otherwise, try other browsers.
+
+```
+Failed to get service worker registration(s): Storage access is restricted in this context due to user settings or private browsing mode. app.js:41
+[HMR] connected client.js:95
+SecurityError: The operation is insecure. app.js:41
+404 page could not be found. Checkout https://www.gatsbyjs.org/docs/add-404-page/ index.js:2177
+    __stack_frame_overlay_proxy_console__ index.js:2177
+    loadPageDataJson dev-loader.js:28
+```    
+
+I set tough privacy restrictions on my firefox and got the above error. So I
+opened another browser and I was able to view the site.
 
 ### References ###
 
