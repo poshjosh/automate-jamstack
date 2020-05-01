@@ -313,7 +313,7 @@ update_pages() {
     local backupdir="${g_site_dir}/backups${SITE_PAGES_DIR}"
 
     if [ -d "${pagesdir}" ]; then
-      
+
         add_frontmatter_to_markdown ${pagesdir}
         update_markdown_links ${pagesdir} ${backupdir}
 
