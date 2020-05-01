@@ -6,6 +6,8 @@
   - After updating variables ensure no VAR_ left in file ???
   sometimes this may not work as some variables e.g VAR_S3_BUCKET_NAME are updated
   when the name becomes available
+
+  - TEst all links from all pages e.g using curl
 ------------------------------
 
 * Add search
@@ -14,6 +16,8 @@
 
 * READ this to properly manage terraform state:
 https://blog.gruntwork.io/how-to-manage-terraform-state-28f5697e68fa
+
+* Production deploy only pages that have changed 
 
 * Ensure the below env variables does not reflect in properties
 -------
