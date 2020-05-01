@@ -8,10 +8,12 @@
   when the name becomes available
 ------------------------------
 
+* Add search
+
+* Use tags/categories https://github.com/gatsbyjs/gatsby/blob/master/docs/docs/adding-tags-and-categories-to-blog-posts.md
+
 * READ this to properly manage terraform state:
 https://blog.gruntwork.io/how-to-manage-terraform-state-28f5697e68fa
-
-* Avoid property names being sub set of others abc_def and abc_def_ghi
 
 * Ensure the below env variables does not reflect in properties
 -------
