@@ -10,13 +10,13 @@ gatsby_new_site() {
 
     # Piping the result of echo is like piping of enter key press
     (echo | gatsby new ${SITE_DIR_NAME} ${1} ) \
-    && echo "    SUCCESS: $msg" || echo "    ERROR: $msg"
+    && success "$msg" || error "$msg"
 }
 
 gatsby_clean() {
     if [ -d "${g_site_dir}" ]; then
 
-        echo "Cleaning site"
+        debug "Cleaning site"
 
         (cd ${g_site_dir} && gatsby clean)
     fi
@@ -42,7 +42,7 @@ gatsby_refresh() {
 #
 gatsby_develop() {
 
-    echo "Publishing site to local web server at http://localhost:$APP_PORT"
+    debug "Publishing site to local web server at http://localhost:$APP_PORT"
 
     # @TODO try exec gatsby develop
 
@@ -58,7 +58,7 @@ gatsby_develop() {
 gatsby_build() {
     local msg='Building site'
     echo $msg
-    (cd ${g_site_dir} && yarn run build && echo "    SUCCESS: $msg" || echo "    ERROR: $msg")
+    (cd ${g_site_dir} && yarn run build && success "$msg" || error "$msg")
 }
 
 # @see https://medium.com/@kyle.galbraith/how-to-host-a-website-on-s3-without-getting-lost-in-the-sea-e2b82aa6cd38
@@ -68,8 +68,8 @@ aws_cli_deploy() {
 
     # Resulting URL format:  http://<AWS_S3_BUCKET_NAME>.s3.<AWS_REGION>.amazonaws.com/
 #    (aws s3 website s3://${AWS_S3_BUCKET_NAME}/ --index-document index.html --error-document error.html) \
-#        && echo "  SUCCESS configuring AWS s3 bucket ${AWS_S3_BUCKET_NAME} for website hosting" \
-#        || echo "  ERROR configuring AWS s3 bucket ${AWS_S3_BUCKET_NAME} for website hosting" \
+#        && debug "  SUCCESS configuring AWS s3 bucket ${AWS_S3_BUCKET_NAME} for website hosting" \
+#        || debug "  ERROR configuring AWS s3 bucket ${AWS_S3_BUCKET_NAME} for website hosting" \
 
 # If using this make sure you check the reference link above for policy JSON
 #    aws s3api put-bucket-policy --bucket <AWS_S3_BUCKET_NAME> --policy file://policy.json
@@ -108,9 +108,9 @@ gatsby_setup() {
 
     local gatsby_node_module_dir="${g_site_dir}/node_modules/gatsby-cli"
     if [ -d "$gatsby_node_module_dir" ] && [ "$(ls -A ${gatsby_node_module_dir})" ]; then
-        echo ""
+        debug ""
     else
-        echo "  WARNING: Node modules not found."
+        debug "  WARNING: Node modules not found."
         exit 1
     fi
 

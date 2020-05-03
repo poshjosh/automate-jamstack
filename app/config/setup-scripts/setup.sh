@@ -18,10 +18,10 @@ source ${g_scripts_dir}/functions-pages.sh
 source ${g_scripts_dir}/functions-util.sh
 source ${g_scripts_dir}/functions-yarn.sh
 
-echo "$(date) - [ Beginning setup ] - Build no 298"
+debug "$(date) - [ Beginning setup ] - Build no 298"
 if [ "$VERBOSE" = true ]; then
     env
-    echo "============================================"
+    debug "============================================"
 fi
 
 printloc
@@ -34,13 +34,13 @@ else
     firstrun=true
     write_to_file 'installed' ${g_site_data_dir} $site_install_filename
 fi
-echo "First run: $firstrun"
+debug "First run: $firstrun"
 
 ensure_aws_cli_configured() {
     local aws_config_file="${HOME}/.aws/config"
     local aws_cred_file="${HOME}/.aws/credentials"
     if [ -f "$aws_config_file" ] && [ -f "$aws_cred_file" ]; then
-        echo "AWS CLI already configured"
+        debug "AWS CLI already configured"
     else
         chmod +x ${g_scripts_dir}/configure-aws-cli.sh
         /bin/bash ${g_scripts_dir}/configure-aws-cli.sh
@@ -56,16 +56,14 @@ is_site_newly_imported=false
 import_site() {
 
     if [ -z ${1+x} ] || [ "$1" == '' ]; then
-        echo "A source for the site was not specified will use contents of directory: ${g_site_dir}"
+        debug "A source for the site was not specified will use contents of directory: ${g_site_dir}"
     else
 
-        if [ -d "${g_site_dir}" ]; then rm -Rf "${g_site_dir}"; fi
+        remove_dir "${g_site_dir}"
 
         local tmp_dir="${g_sites_dir}/temp"
 
-        if [ -d "$tmp_dir" ]; then
-            rm -Rf $tmp_dir
-        fi
+        remove_dir "$tmp_dir"
 
         import ${1} ${tmp_dir}
 
@@ -74,7 +72,7 @@ import_site() {
         if [ -f "$pkg_json" ]; then
             find_and_replace_env_variables_in_file ${pkg_json}
         else
-             echo "File not found: $pkg_json"
+             debug "File not found: $pkg_json"
         fi
 
         local site_source=$tmp_dir
@@ -88,7 +86,7 @@ import_site() {
 
         (cd ${g_sites_dir} && (gatsby_new_site "${site_source}" && is_site_newly_imported=true))
 
-        rm -Rf ${tmp_dir}
+        remove_dir ${tmp_dir}
     fi
 }
 
@@ -100,14 +98,14 @@ check_site_imported() {
     else
         is_site_already_imported=false;
     fi
-    echo "Site is imported: $is_site_already_imported"
+    debug "Site is imported: $is_site_already_imported"
 }
 
 check_site_imported
 
 if [ "${is_site_already_imported}" = false ] || [ "$REFRESH_SITE" = true ]; then
 
-    if [ -d "${g_site_dir}" ]; then rm -Rf "${g_site_dir}"; fi
+    remove_dir "${g_site_dir}"
 
     import_site ${SITE_SOURCE}
 fi
@@ -117,13 +115,7 @@ if [ "$REFRESH_SITE_CACHE" = true ] && [ "$is_site_newly_imported" = false ]; th
 
     site_cache_dir="${g_site_dir}/.cache"
 
-    deleting_cache_msg="Deleting cache at $site_cache_dir"
-
-    echo $deleting_cache_msg
-
-    if [ -d "$site_cache_dir"]; then
-        (rm -Rf "$site_cache_dir" && "    SUCCESS: $deleting_cache_msg" || "    ERROR: $deleting_cache_msg");
-    fi
+    remove_dir "$site_cache_dir"
 fi
 
 is_site_pages_already_imported=false
@@ -134,7 +126,7 @@ check_site_pages_imported() {
     else
         is_site_pages_already_imported=false;
     fi
-    echo "Site pages are imported: $is_site_pages_already_imported"
+    debug "Site pages are imported: $is_site_pages_already_imported"
 }
 
 import_site_pages() {
@@ -143,15 +135,7 @@ import_site_pages() {
 
     if [ "${is_site_pages_already_imported}" = false ] || [ "$REFRESH_SITE_PAGES" = true ]; then
 
-        if [ -d "$site_pages_loc" ]; then
-            echo "Removing directory: ${site_pages_loc}"
-            rm -Rf "$site_pages_loc";
-        fi
-
-        if [ ! -d "${site_pages_loc}" ]; then
-            echo "Creating directory: ${site_pages_loc}"
-            mkdir -p ${site_pages_loc}
-        fi
+        provide_empty_dir $site_pages_loc
 
         import ${SITE_PAGES_SOURCE} ${site_pages_loc}
     fi
@@ -169,7 +153,7 @@ install_plugin() {
 install_plugin_if_not_installed() {
     local plugin_install_dir="${1}/node_modules/${2}"
     if [ -d "$plugin_install_dir" ] && [ "$(ls -A $plugin_install_dir)" ]; then
-        echo "Plugin already installed: ${2}"
+        debug "Plugin already installed: ${2}"
     else
         (cd ${1} && install_plugin ${2} ${3}) # the enclosing bracket keeps the change directory within context
     fi
@@ -181,19 +165,19 @@ find_and_replace_variables() {
 
     local file="${g_scripts_dir}/list_of_files_containing_variables.txt"
 
-    echo "Will find and replace all variables in files listed in $file"
-    echo "    BEGIN FIND AND REPLACE"
-    echo "======================================================================"
-    echo ""
-    echo "Function to apply = custom_find_and_replace_variables_in_file"
+    debug "Will find and replace all variables in files listed in $file"
+    debug "    BEGIN FIND AND REPLACE"
+    debug "======================================================================"
+    debug ""
+    debug "Function to apply = custom_find_and_replace_variables_in_file"
     act_on_files_listed_in_file $file custom_find_and_replace_variables_in_file
 
-    echo ""
-    echo "Function to apply = find_and_replace_env_variables_in_file"
+    debug ""
+    debug "Function to apply = find_and_replace_env_variables_in_file"
     act_on_files_listed_in_file $file find_and_replace_env_variables_in_file
 
-    echo "    END FIND AND REPLACE"
-    echo "======================================================================"
+    debug "    END FIND AND REPLACE"
+    debug "======================================================================"
 }
 
 find_and_replace_variables
@@ -212,13 +196,13 @@ fi
 
 update_terraform_cfgs() {
 
-    echo "Updating terraform configuration"
+    debug "Updating terraform configuration"
 
-    mkdir -p ${g_site_terraform_dir}
+    make_dir ${g_site_terraform_dir}
 
     if [ -z ${AWS_S3_BUCKET_NAME+x} ] || [ "$AWS_S3_BUCKET_NAME" == '' ]; then
 
-        echo "An s3 bucket name was not specified. Will generate one"
+        debug "An s3 bucket name was not specified. Will generate one"
 
         local epoch_time=$(date '+%s')
         local raw_name="${AWS_S3_BUCKET_NAME_PREFIX}-${SITE_DIR_NAME}-${epoch_time}"
@@ -230,21 +214,21 @@ update_terraform_cfgs() {
 
         if [ "$bucketname_set" = true ]; then
 
-            echo "  SUCCESS: set AWS_S3_BUCKET_NAME = $AWS_S3_BUCKET_NAME"
+            debug "  SUCCESS: set AWS_S3_BUCKET_NAME = $AWS_S3_BUCKET_NAME"
 
             props_file="${g_site_dir}.env"
 
-            echo "Updating $props_file with environment AWS_S3_BUCKET_NAME"
+            debug "Updating $props_file with environment AWS_S3_BUCKET_NAME"
 
             # Update our persistent store with the updated list of environment
             # variables which should now contain AWS_S3_BUCKET_NAME
             env > $props_file && "  SUCCESS: Saved bucket name" || "  ERROR: Bucket name not saved"
 
         else
-            echo "  ERROR: Not set- AWS_S3_BUCKET_NAME = $AWS_S3_BUCKET_NAME"
+            debug "  ERROR: Not set- AWS_S3_BUCKET_NAME = $AWS_S3_BUCKET_NAME"
         fi
     else
-        echo "Existing AWS_S3_BUCKET_NAME = $AWS_S3_BUCKET_NAME"
+        debug "Existing AWS_S3_BUCKET_NAME = $AWS_S3_BUCKET_NAME"
     fi
 
     if [ -z ${AWS_S3_BUCKET_NAME+x} ] || [ "$AWS_S3_BUCKET_NAME" == '' ]; then
@@ -258,9 +242,9 @@ update_terraform_cfgs() {
 
         find_and_replace_variables
 
-        echo "    SUCCESS: Updated terraform configuration"
+        success "Updated terraform configuration"
     else
-         echo "    ERROR: Not updated - terraform configuration"
+         error "Not updated - terraform configuration"
     fi
 }
 
@@ -281,20 +265,20 @@ create_or_update_s3_bucket() {
         local msginit='Intializing s3 bucket provisioner'
         echo $msginit
         terraform_init ${g_site_terraform_dir} \
-            && echo "    SUCCESS: $msginit" || echo "    ERROR: $msginit"
+            && success "$msginit" || error "$msginit"
 
         local msgapply='Creating/Updating s3 bucket'
         echo $msgapply
         local applied=false;
         terraform_apply ${g_site_terraform_dir} && applied=true || applied=false
         if [ "$applied" = true ]; then
-            echo "    SUCCESS: $msgapply"
+            success "$msgapply"
             write_to_file 's3-bucket-created' ${g_site_terraform_dir} ${site_terraform_filename}
         else
-            echo "    ERROR: $msgapply"
+            error "$msgapply"
         fi
     else
-        echo "Terraform already initialized for ${g_site_terraform_dir}"
+        debug "Terraform already initialized for ${g_site_terraform_dir}"
     fi
 }
 

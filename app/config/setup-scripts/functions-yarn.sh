@@ -6,7 +6,7 @@ yarn_add_plugin() {
 
     local minstalled=false
 
-    echo "Dev: ${2}, installing plugin: ${1}"
+    debug "Dev: ${2}, installing plugin: ${1}"
 
     if [ "${2}" = true ]; then
         (yarn add ${1} --dev && minstalled=true)
@@ -14,9 +14,9 @@ yarn_add_plugin() {
         (yarn add ${1} && minstalled=true)
     fi
     if [ "${minstalled}" = true ]; then
-        echo "  SUCCESS installing plugin: ${1}"
+        debug "  SUCCESS installing plugin: ${1}"
     else
-        echo "  ERROR installing plugin: ${1}"
+        debug "  ERROR installing plugin: ${1}"
     fi
 }
 

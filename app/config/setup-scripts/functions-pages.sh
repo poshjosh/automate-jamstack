@@ -4,7 +4,7 @@ source ${g_scripts_dir}/functions-util.sh
 
 add_tableofcontents_to_markdown() {
 
-    echo "Adding table of contents to all .md files in ${1}"
+    debug "Adding table of contents to all .md files in ${1}"
 
     local files=$(find ${1} -iname '*.md' -type f)
 
@@ -23,7 +23,7 @@ add_tableofcontents_to_markdown() {
             pandoc -s --toc -o $fname $fname
         else
             if [ -z "$toc_heading" ] || [ "$toc_heading" == '' ]; then
-                echo "    WARNING. Property PAGE_TABLE_OF_CONTENT_HEADING not found. Heading will not be added to table of content"
+                warning "Property PAGE_TABLE_OF_CONTENT_HEADING not found. Heading will not be added to table of content"
                 pandoc -s --toc -o $fname $fname
             else
                 # Put values in quote for toc-title and template
@@ -82,7 +82,7 @@ get_first_non_space_line() {
 
 add_frontmatter_to_markdown() {
 
-    echo "Adding frontmatter to all .md files in ${1}"
+    debug "Adding frontmatter to all .md files in ${1}"
 
     local files=$(find ${1} -iname '*.md' -type f)
 
@@ -125,7 +125,7 @@ add_frontmatter_to_markdown() {
 
 update_links() {
 
-    echo "Updating $3 to $4 in all $2 files in ${1}"
+    debug "Updating $3 to $4 in all $2 files in ${1}"
 
     local files=$(find ${1} -iname "${2}" -type f)
 
@@ -152,10 +152,10 @@ update_markdown_links() {
 
     if [ ! -d "$bak" ]; then
 
-        echo "Creating directory: $bak"
-        mkdir -p $bak
+        debug "Creating directory: $bak"
+        make_dir $bak
 
-        echo "Copying contents of: $src to: $bak"
+        debug "Copying contents of: $src to: $bak"
         cp -R "${src}/." ${bak}
     fi
 
