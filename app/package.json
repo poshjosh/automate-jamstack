@@ -53,7 +53,6 @@
     "url": "git+https://github.com/poshjosh/chinomsoikwuagwu.com.git"
   },
   "scripts": {
-    "deploy": "gatsby-plugin-s3 deploy --yes",
     "build": "gatsby build",
     "develop": "gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
