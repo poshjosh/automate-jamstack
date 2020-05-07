@@ -135,7 +135,11 @@ import_site_pages() {
 
     if [ "${is_site_pages_already_imported}" = false ] || [ "$REFRESH_SITE_PAGES" = true ]; then
 
-        provide_empty_dir $site_pages_loc
+# After applying this, we still found some files with .deleted extension
+#        provide_empty_dir $site_pages_loc
+        remove_dir $site_pages_loc
+
+        make_dir $site_pages_loc
 
         import ${SITE_PAGES_SOURCE} ${site_pages_loc}
     fi
@@ -144,20 +148,6 @@ import_site_pages() {
 if [ "$is_site_newly_imported" = false ]; then
     import_site_pages
 fi
-
-install_plugin() {
-
-    yarn_add_plugin $1 $2
-}
-
-install_plugin_if_not_installed() {
-    local plugin_install_dir="${1}/node_modules/${2}"
-    if [ -d "$plugin_install_dir" ] && [ "$(ls -A $plugin_install_dir)" ]; then
-        debug "Plugin already installed: ${2}"
-    else
-        (cd ${1} && install_plugin ${2} ${3}) # the enclosing bracket keeps the change directory within context
-    fi
-}
 
 echo 'Updating configuration'
 

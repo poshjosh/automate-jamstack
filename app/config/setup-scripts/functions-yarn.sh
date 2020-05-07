@@ -27,3 +27,17 @@ yarn_add() {
 yarn_add_dev() {
     yarn_add_plugin $1 true
 }
+
+install_plugin() {
+
+    yarn_add_plugin $1 $2
+}
+
+install_plugin_if_not_installed() {
+    local plugin_install_dir="${1}/node_modules/${2}"
+    if [ -d "$plugin_install_dir" ] && [ "$(ls -A $plugin_install_dir)" ]; then
+        debug "Plugin already installed: ${2}"
+    else
+        (cd ${1} && install_plugin ${2} ${3}) # the enclosing bracket keeps the change directory within context
+    fi
+}
