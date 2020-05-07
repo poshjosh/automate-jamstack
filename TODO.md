@@ -10,14 +10,16 @@
   - TEst all links from all pages e.g using curl
 ------------------------------
 
-* Add search
+* Add comments
+
+* Improve search
 
 * Use tags/categories https://github.com/gatsbyjs/gatsby/blob/master/docs/docs/adding-tags-and-categories-to-blog-posts.md
 
 * READ this to properly manage terraform state:
 https://blog.gruntwork.io/how-to-manage-terraform-state-28f5697e68fa
 
-* Production deploy only pages that have changed 
+* Production deploy only pages that have changed
 
 * Ensure the below env variables does not reflect in properties
 -------
