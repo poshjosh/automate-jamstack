@@ -1,5 +1,12 @@
 ### Automate the deployment of markdown content as a static website to cloud based infrastructure ###
 
+### TD:LR
+
+Execute the `ignore\sample-launch-script.bat` file (should be in the root folder)
+The file is for windows machines.
+
+### Intro
+
 This application will help publish your [markdown](https://en.wikipedia.org/wiki/Markdown)
 pages as a static website built with javascript and HTML effortlessly. Really
 at the click of a file. All you need are:
@@ -11,6 +18,16 @@ at the click of a file. All you need are:
 Caveat: _You need to have [docker](https://www.docker.com/) installed._
 
 For more information on what `markdown` is scroll to the `markdown` section below
+
+### Run the app ###
+
+- There is a sample launch script file named: `sample-launch-script.bat`.
+Rename it to suit your environment/needs.
+
+- Edit the site environment file in `app/sites/<SITE_NAME>.env` to suite your
+environment/needs. (For example set PROFILE to `dev` or `prod`)
+
+- Execute the sample launch script.
 
 ### Direct Usage ###
 
