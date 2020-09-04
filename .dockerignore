@@ -1,4 +1,6 @@
 ignore/
+sample-launch-script.bat
+sample-launch-script.sh
 README.md
 TODO.md
 .aws
