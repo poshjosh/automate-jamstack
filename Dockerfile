@@ -18,7 +18,7 @@ RUN apk update && apk upgrade \
     	  groff \
     	  less \
         curl \
-    	  python \
+    	  python3 \
     	  py-pip \
         unzip \
     && rm -rf /var/cache/apk/* \
