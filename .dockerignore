@@ -10,3 +10,4 @@ docker-compose*
 .git
 .gitignore
 .vscode
+node_modules/
