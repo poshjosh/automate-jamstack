@@ -10,7 +10,7 @@ gatsby_new_site() {
 
     # Piping the result of echo is like piping of enter key press
     (echo | gatsby new ${SITE_DIR_NAME} ${1} ) \
-    && echo "    SUCCESS: $msg" || echo "    ERROR: $msg"
+    && echo "    SUCCESS: $msg" || (echo "    ERROR: $msg" && exit 1)
 }
 
 gatsby_clean() {

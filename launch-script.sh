@@ -7,7 +7,8 @@
 # Type: mysite.com not: http://mysite.com
 site_name=chinomsoikwuagwu.com
 
-app_dir="${HOME}/dev_chinomso/automate-jamstack"
+# Using . did not work here
+app_dir="${HOME}/Documents/dev/GitHub/automate-jamstack"
 
 env_file="${app_dir}/app/sites/${site_name}.env"
 

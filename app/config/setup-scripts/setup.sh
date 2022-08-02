@@ -59,11 +59,15 @@ import_site() {
         echo "A source for the site was not specified will use contents of directory: ${g_site_dir}"
     else
 
-        if [ -d "${g_site_dir}" ]; then rm -Rf "${g_site_dir}"; fi
+        if [ -d "${g_site_dir}" ]; then
+            echo "Deleting ${g_site_dir}"
+            rm -Rf "${g_site_dir}"
+        fi
 
         local tmp_dir="${g_sites_dir}/temp"
 
         if [ -d "$tmp_dir" ]; then
+            echo "Deleting ${tmp_dir}"
             rm -Rf $tmp_dir
         fi
 
@@ -88,6 +92,8 @@ import_site() {
 
         (cd ${g_sites_dir} && (gatsby_new_site "${site_source}" && is_site_newly_imported=true))
 
+        echo "Deleting ${tmp_dir}"
+
         rm -Rf ${tmp_dir}
     fi
 }
@@ -107,7 +113,10 @@ check_site_imported
 
 if [ "${is_site_already_imported}" = false ] || [ "$REFRESH_SITE" = true ]; then
 
-    if [ -d "${g_site_dir}" ]; then rm -Rf "${g_site_dir}"; fi
+    if [ -d "${g_site_dir}" ]; then
+        echo "Deleting ${g_site_dir}"
+        rm -Rf "${g_site_dir}"
+    fi
 
     import_site ${SITE_SOURCE}
 fi
@@ -121,7 +130,7 @@ if [ "$REFRESH_SITE_CACHE" = true ] && [ "$is_site_newly_imported" = false ]; th
 
     echo $deleting_cache_msg
 
-    if [ -d "$site_cache_dir"]; then
+    if [ -d "$site_cache_dir" ]; then
         (rm -Rf "$site_cache_dir" && "    SUCCESS: $deleting_cache_msg" || "    ERROR: $deleting_cache_msg");
     fi
 fi

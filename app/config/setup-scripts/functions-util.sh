@@ -106,6 +106,7 @@ emplace_zip_file_content_and_delete_zip_file() {
         else
             echo "Found directory: $dir"
             (cd ${dir} && move_dir_content_to_parent)
+            echo "Deleting ${dir}"
             rm -Rf ${dir}
         fi
     fi

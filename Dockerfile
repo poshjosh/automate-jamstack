@@ -1,4 +1,4 @@
-FROM pandoc/core
+FROM pandoc/core:latest-alpine
 
 LABEL maintainer="https://github.com/poshjosh <posh.bc@gmail.com>"
 
