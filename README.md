@@ -41,7 +41,7 @@ AWS_REGION=[VALUE REQUIRED]
 ```
 
 - Now you are ready to get going. Just open a terminal/command prompt and
-type the following command:
+run this script: `launch-script.sh`
 
 ### Use a custom domain name ###
 
@@ -67,8 +67,16 @@ domain service. The service where you purchased your domain name `my-awesome-blo
 
 ### Run the app ###
 
-```
+windows:
+
+```shell
 $ docker run --name poshjosh-automate-jamstack -it --rm -v "%cd%/app":/app -p 8000:8000 poshjosh/automate-jamstack
+```
+
+linux/mac:
+
+```shell
+$ docker run --name poshjosh-automate-jamstack -it --rm -v "${pwd}/app":/app -p 8000:8000 poshjosh/automate-jamstack
 ```
 
 - Browse to http://localhost:8000 to view you website on your local machine.
