@@ -114,10 +114,10 @@ gatsby_setup() {
         exit 1
     fi
 
-    if [ "$PROFILE" == 'dev' ]; then
-        gatsby_develop
-    else
+    if [ "$PROFILE" == 'prod' ]; then
         gatsby_build
+    else
+        gatsby_develop
     fi
 }
 

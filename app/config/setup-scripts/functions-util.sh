@@ -6,7 +6,7 @@ printloc() {
 
     if [ "$VERBOSE" = true ]; then
         echo "$(date '+%T') $msg" & ls -a
-    else [ "$PROFILE" == 'dev' ]
+    else [ "$PROFILE" != 'prod' ]
         echo "$(date '+%T') $msg";
     fi
 }
