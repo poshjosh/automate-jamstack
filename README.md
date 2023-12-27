@@ -43,6 +43,13 @@ AWS_REGION=[VALUE REQUIRED]
 - Now you are ready to get going. Just open a terminal/command prompt and
 run this script: `launch-script.sh`
 
+### Deploying to Amazon S3 ###
+
+- Change the profile property in the `/app/sites/my-awesome-blog.env` file you created earlier
+from `PROFILE=dev` to production `PROFILE=prod`
+
+- Run the app (See below for how to)
+
 ### Use a custom domain name ###
 
 _This section only applies if you wish to use a custom domain name. Otherwise
@@ -67,18 +74,8 @@ domain service. The service where you purchased your domain name `my-awesome-blo
 
 ### Run the app ###
 
-windows:
-
-```shell
-$ docker run --name poshjosh-automate-jamstack -it --rm -v "%cd%/app":/app -p 8000:8000 poshjosh/automate-jamstack
-```
-
-linux/mac:
-
-```shell
-$ docker run --name poshjosh-automate-jamstack -it --rm -v "${pwd}/app":/app -p 8000:8000 poshjosh/automate-jamstack
-```
-
+- Open a terminal/command prompt and run this script: `launch-script.sh`
+- It could take a while. Wait till you see a message like: `You can now view [Site Name] in the browser.`
 - Browse to http://localhost:8000 to view you website on your local machine.
 
 If your browser complains with an error message like the following. You may need
@@ -107,7 +104,7 @@ below.
 This application will help publish your [markdown](https://en.wikipedia.org/wiki/Markdown)
 pages as a static website built with javascript and HTML.
 
-### What is Markdown ####
+### What is Markdown ###
 
 [Markdown](https://en.wikipedia.org/wiki/Markdown) is a markup language written
 in plain text format. It allows you to add structure and style to your content
@@ -177,6 +174,19 @@ You can make the footnote links clickable as well.
 <sup>[1](#myfootnote1)</sup>
 ```
 
+### Converting between page formats ###
+
+[Pandoc](https://pandoc.org/) is a command-line utility that can convert between various formats. It is available for Windows, Mac, and Linux. 
+
+First [install Pandoc](https://pandoc.org/installing.html). Then use it to convert between formats.
+
+Run the following command to convert a file called `doc.html` from html to markdown as file `doc.md`:
+
+```shell
+pandoc --standalone --from html --to markdown -o doc.md doc.html
+```
+
+
 ### For more advanced users ###
 
 The following steps will help you customize the website.
@@ -241,11 +251,6 @@ a selection of typography. To change the typography open file at
 ### Some properties and their effects ###
 
 VERBOSE - Causes a more verbose log
-
-### Deploying to Amazon S3 ###
-
-Change the profile property in the `sites/default-site.env` file you created earlier
-from `PROFILE=dev` to production `PROFILE=prod`  
 
 ### References ###
 
