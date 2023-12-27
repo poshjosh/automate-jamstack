@@ -13,7 +13,7 @@ find_and_replace_text_in_text() {
     if [ -z ${3+x} ] || [ "${3}" == '' ]; then
         trace "Replacement not available for: ${2} of ${1}"
     else
-        #@TODO ensure replacement took place by serching for the variable that
+        #@TODO ensure replacement took place by searching for the variable that
         # was replaced
         return_value_find_and_replace_text_in_text=$(echo $1 | sed -e "s^${2}^${3}^g")
         if [ $return_value_find_and_replace_text_in_text == $1 ]; then
@@ -73,7 +73,7 @@ find_and_replace_text_in_file() {
     if [ -z ${3+x} ] || [ "${3}" == '' ]; then
         trace "Replacement not available for: ${2}"
     else
-        #@TODO ensure replacement took place by serching for the variable that
+        #@TODO ensure replacement took place by searching for the variable that
         # was replaced
         sed -i "s^${2}^${3}^g" $1 \
             && trace "Updated all ${2} to ${3} in $1" \

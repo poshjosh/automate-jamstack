@@ -32,13 +32,19 @@ the properties file (`/app/sites/my-awesome-blog.env`) you just created.
 
 - Edit/Update the relevant properties in your properties file (`/app/sites/my-awesome-blog.env`).
 
-- You need to provide values for at least these 3 properties
+- You need to provide values for at least these properties:
 
-```
+```dotenv
 AWS_ACCESS_KEY=[VALUE REQUIRED]
 AWS_SECRET_KEY=[VALUE REQUIRED]
 AWS_REGION=[VALUE REQUIRED]
+# E.g. https://github.com/[github-user]/[github-repository]/archive/master.zip
+SITE_PAGES_SOURCE=[VALUE REQUIRED]
+# E.g. git+https://github.com/[github-user]/[github-repository].git
+SITE_REPOSITORY_URL=[VALUE REQUIRED]
 ```
+
+- From the above, you can see that you need a git repository, from where your site content will be pulled.
 
 - Now you are ready to get going. Just open a terminal/command prompt and
 run this script: `launch-script.sh`
@@ -64,7 +70,7 @@ then:
 - Login to amazon Route53
 
 - Create a hosted zone with name `my-awesome-blog.com` and take note of
-the ID of the newly created hosted zone. Also take not of all the name servers.
+the ID of the newly created hosted zone. Also take note of all the name servers.
 E.g `ns-131.awsdns-16.com`
 
 - Copy your name servers and use them to update the nameservers of your

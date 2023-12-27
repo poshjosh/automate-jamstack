@@ -2,10 +2,12 @@
 
 #@echo off
 
-#todo Prompt user to enter site name
+printf "\nEnter site name e.g my-site.com\n"
+
+read site_name
 
 # Type: mysite.com not: http://mysite.com
-site_name=chinomsoikwuagwu.com
+#site_name=chinomsoikwuagwu.com
 
 # Using . did not work here
 # "${HOME}/Documents/dev/GitHub/automate-jamstack"
