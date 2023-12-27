@@ -186,6 +186,10 @@ You can make the footnote links clickable as well.
 
 First [install Pandoc](https://pandoc.org/installing.html). Then use it to convert between formats.
 
+Run the script `convert-to-markdown.sh` to convert multiple files to markdown.
+
+__Example Pandoc Direct Usage__
+
 Run the following command to convert a file called `doc.html` from html to markdown as file `doc.md`:
 
 ```shell
