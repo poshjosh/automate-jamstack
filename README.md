@@ -25,7 +25,7 @@ after the name of the site you are creating `my-awesome-blog.env`.
           └───my-awesome-blog.env
 ```
 
-- Site names should be restricted to letters, digits, underscores and hypens.
+- Site names should be restricted to letters, digits, periods, underscores and hypens.
 
 - Copy contents of `/app/config/site-data/default-properties.properties` into
 the properties file (`/app/sites/my-awesome-blog.env`) you just created.
@@ -47,7 +47,7 @@ SITE_REPOSITORY_URL=[VALUE REQUIRED]
 - From the above, you can see that you need a git repository, from where your site content will be pulled.
 
 - Now you are ready to get going. Just open a terminal/command prompt and
-run this script: `launch-script.sh`
+run this script: `scripts/launch-script.sh`
 
 ### Deploying to Amazon S3 ###
 
@@ -80,7 +80,7 @@ domain service. The service where you purchased your domain name `my-awesome-blo
 
 ### Run the app ###
 
-- Open a terminal/command prompt and run this script: `launch-script.sh`
+- Open a terminal/command prompt and run this script: `scripts/launch-script.sh`
 - It could take a while. Wait till you see a message like: `You can now view [Site Name] in the browser.`
 - Browse to http://localhost:8000 to view you website on your local machine.
 
@@ -186,7 +186,7 @@ You can make the footnote links clickable as well.
 
 First [install Pandoc](https://pandoc.org/installing.html). Then use it to convert between formats.
 
-Run the script `convert-to-markdown.sh` to convert multiple files to markdown.
+Run the script `scripts/convert-to-markdown.sh` to convert multiple files to markdown.
 
 __Example Pandoc Direct Usage__
 
