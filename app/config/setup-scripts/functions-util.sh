@@ -5,7 +5,7 @@ printloc() {
     local msg="Currernt directory: $(pwd)"
 
     if [ "$VERBOSE" = true ]; then
-        echo "$(date '+%T') $msg" & ls -a
+        echo "$(date '+%T') $msg" && ls -a
     else [ "$PROFILE" != 'prod' ]
         echo "$(date '+%T') $msg";
     fi

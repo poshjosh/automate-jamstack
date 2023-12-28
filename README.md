@@ -44,7 +44,7 @@ SITE_PAGES_SOURCE=[VALUE REQUIRED]
 SITE_REPOSITORY_URL=[VALUE REQUIRED]
 ```
 
-- From the above, you can see that you need a git repository, from where your site content will be pulled.
+- From the above, you need a public git repository, from where your site content will be pulled.
 
 - Now you are ready to get going. Just open a terminal/command prompt and
 run this script: `scripts/launch-script.sh`
