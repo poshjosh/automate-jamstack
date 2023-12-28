@@ -2,7 +2,7 @@
 
 printloc() {
 
-    local msg="Currernt directory: $(pwd)"
+    local msg="Current directory: $(pwd)"
 
     if [ "$VERBOSE" = true ]; then
         echo "$(date '+%T') $msg" && ls -a

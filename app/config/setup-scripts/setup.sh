@@ -18,7 +18,8 @@ source ${g_scripts_dir}/functions-pages.sh
 source ${g_scripts_dir}/functions-util.sh
 source ${g_scripts_dir}/functions-yarn.sh
 
-echo "$(date) - [ Beginning setup ] - Build no 298"
+echo "$(date) - [ Beginning setup ]"
+
 if [ "$VERBOSE" = true ]; then
     env
     echo "============================================"
@@ -106,7 +107,7 @@ check_site_imported() {
     else
         is_site_already_imported=false;
     fi
-    echo "Site is imported: $is_site_already_imported"
+    echo "Site was already imported: $is_site_already_imported"
 }
 
 check_site_imported
@@ -170,17 +171,12 @@ if [ "$is_site_newly_imported" = false ]; then
     import_site_pages
 fi
 
-install_plugin() {
-
-    yarn_add_plugin $1 $2
-}
-
 install_plugin_if_not_installed() {
     local plugin_install_dir="${1}/node_modules/${2}"
     if [ -d "$plugin_install_dir" ] && [ "$(ls -A $plugin_install_dir)" ]; then
         echo "Plugin already installed: ${2}"
     else
-        (cd ${1} && install_plugin ${2} ${3}) # the enclosing bracket keeps the change directory within context
+        (cd ${1} && yarn_add_plugin ${2} ${3}) # the enclosing bracket keeps the change directory within context
     fi
 }
 

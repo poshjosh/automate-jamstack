@@ -111,7 +111,8 @@ gatsby_setup() {
         echo ""
     else
         echo "  WARNING: Node modules not found."
-        exit 1
+        (cd ${g_site_dir} && yarn_add "gatsby-cli") || exit 1
+        #exit 1
     fi
 
     if [ "$PROFILE" == 'prod' ]; then

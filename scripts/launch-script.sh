@@ -2,12 +2,9 @@
 
 #@echo off
 
-printf "\nEnter site name e.g my-site.com\n"
+printf "\nEnter site name without http://, e.g my-site.com\n"
 
 read site_name
-
-# Type: mysite.com not: http://mysite.com
-#site_name=chinomsoikwuagwu.com
 
 # Using . did not work here
 # "${HOME}/Documents/dev/GitHub/automate-jamstack"

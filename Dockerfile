@@ -1,4 +1,5 @@
-FROM pandoc/core:latest-alpine
+#FROM pandoc/core:latest-alpine
+FROM node:18-alpine3.18
 
 LABEL maintainer="https://github.com/poshjosh <posh.bc@gmail.com>"
 
@@ -21,6 +22,7 @@ RUN apk update && apk upgrade \
     	  python3 \
     	  py-pip \
         unzip \
+        pandoc \
     && rm -rf /var/cache/apk/* \
     && pip install awscli \
     && aws --version \
