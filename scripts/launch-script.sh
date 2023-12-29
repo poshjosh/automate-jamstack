@@ -1,4 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+[[ -n ${DEBUG:-} ]] && set -o xtrace
 
 #@echo off
 
