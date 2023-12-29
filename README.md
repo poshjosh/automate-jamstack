@@ -12,6 +12,14 @@ Caveat: _You need to have [docker](https://www.docker.com/) installed._
 
 For more information on what `markdown` is scroll to the `markdown` section below
 
+### Building ###
+
+On first use build the docker image by running:
+
+```shell
+docker build -t poshjosh/automate-jamstack .
+```
+
 ### Direct Usage ###
 
 To create a new blog named `my-awesome-blog`:
@@ -69,8 +77,8 @@ then:
 
 - Login to amazon Route53
 
-- Create a hosted zone with name `my-awesome-blog.com` and take note of
-the ID of the newly created hosted zone. Also take note of all the name servers.
+- Create a hosted zone with the name of the domain/bucket (e.g `my-awesome-blog.com`) and take 
+note of the ID of the newly created hosted zone. Also take note of all the name servers.
 E.g `ns-131.awsdns-16.com`
 
 - Copy your name servers and use them to update the nameservers of your
@@ -268,6 +276,19 @@ __Missing Field__
 
 - __Example error message:__ `Cannot query field "tags" on type "MarkdownRemarkFrontmatter".`
 - __Solution:__ Ensure at least one markdown page has the tags field in their frontmatter.
+
+__Logs Enabled__
+
+- __Example error message:__ `Error: creating Amazon S3 (Simple Storage) Bucket (logs): BucketAlreadyExists`
+- __Solution:__ We currently set `logs_enabled` to `false` in `main.tf`.
+```shell 
+ Error: creating Amazon S3 (Simple Storage) Bucket (logs): BucketAlreadyExists: The requested bucket name is not available. The bucket namespace is shared by all users of the system. Please select a different name and try again.
+       status code: 409, request id: 8BP9ZWJ7YED51GZG, host id: dhcmOr7XXc9cZuDYyiUTHqbZAC7wxNtH/6fBVwvGIZwJvoW+dxlEqNrwxzagGQkEAp1KzDXTIz/eZO/qpe9v1w==
+ 
+   with module.s3_website.module.logs.module.aws_s3_bucket.aws_s3_bucket.default[0],
+   on .terraform/modules/s3_website.logs.aws_s3_bucket/main.tf line 29, in resource "aws_s3_bucket" "default":
+   29: resource "aws_s3_bucket" "default" {
+```
 
 ### References ###
 

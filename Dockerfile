@@ -8,7 +8,7 @@ ENV APP_PORT=${APP_PORT}
 
 EXPOSE ${APP_PORT}
 
-ARG TERRAFORM_VERSION="0.12.23"
+ARG TERRAFORM_VERSION="1.6.6"
 
 RUN apk update && apk upgrade \
     && apk add util-linux \

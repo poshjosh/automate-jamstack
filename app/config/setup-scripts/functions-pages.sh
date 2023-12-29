@@ -33,6 +33,14 @@ add_tableofcontents_to_markdown() {
     done
 }
 
+convert_title_to_tags()  {
+    local update=$(echo "$1" | sed -e "s/[-_,;:.]/ /g")
+    update=$(echo $update | tr -s ' ')
+    update=$(echo $update | sed -e "s/ /\", \"/g")
+    update="[\"$update\"]"
+    echo "$update"
+}
+
 add_frontmatter() {
 
     trace "add_frontmatter $1"
@@ -58,7 +66,9 @@ add_frontmatter() {
 
     local mtitle=$(echo $name_without_ext | sed -e "s/[-|_]/ /g")
 
-    local frontmatter="---\npath: \"${1}\"\ndate: \"${mdate}\"\ntitle: \"${mtitle}\"\ndescription: \"${SITE_NAME} - ${mtitle}\"\nlang: \"en-us\"\n---\n"
+    local mtags=$(convert_title_to_tags "$mtitle")
+
+    local frontmatter="---\npath: \"${1}\"\ndate: \"${mdate}\"\ntitle: \"${mtitle}\"\ndescription: \"${SITE_NAME} - ${mtitle}\"\ntags: ${mtags}\nlang: \"en-us\"\n---\n"
 
     trace "Front matter: $frontmatter"
 

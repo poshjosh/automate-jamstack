@@ -4,10 +4,16 @@ variable "create_www_subdomain" {
   default     = ${AWS_S3_CREATE_WWW_SUBDOMAIN}
 }
 
-variable "name" {
+# variable "bucket_name" {
+#   type        = string
+#   description = "Used by logs module. Bucket name. If provided, the bucket will be created with this name instead of generating the name from the context"
+#   default     = "ajtz-1e1r13kyaqmn-bxd9821-49mkjz-9213.com.logs"
+# }
+
+variable "region" {
   type        = string
-  description = "The Name of the application or solution  (e.g. `bastion` or `portal`)"
-  default     = "${AWS_S3_BUCKET_NAME}"
+  description = "AWS region"
+  default    = "${AWS_REGION}"
 }
 
 variable "hostname" {
@@ -16,10 +22,28 @@ variable "hostname" {
   default     = "${AWS_S3_BUCKET_NAME}"
 }
 
-variable "parent_zone_id" {
+variable "parent_zone_name" {
   type        = string
-  description = "ID of the hosted zone to contain the record"
-  default     = "${AWS_HOSTED_ZONE_ID}"
+  description = "Name of the hosted zone to contain the record"
+  default     = "${AWS_S3_BUCKET_NAME}"
+}
+
+variable "versioning_enabled" {
+  type        = bool
+  description = "Enable or disable versioning"
+  default     = true
+}
+
+variable "force_destroy" {
+  type        = bool
+  description = "Delete all objects from the bucket so that the bucket can be destroyed without error (e.g. `true` or `false`)"
+  default     = true
+}
+
+variable "encryption_enabled" {
+  type        = bool
+  description = "When set to 'true' the resource will have AES256 encryption enabled by default"
+  default     = false
 }
 
 variable "index_document" {
@@ -34,20 +58,10 @@ variable "error_document" {
   default     = "404.html"
 }
 
-variable "region" {
+# The following variables are used by module dns_www
+
+variable "parent_zone_id" {
   type        = string
-  description = "AWS region this bucket should reside in"
-  default     = "${AWS_REGION}"
-}
-
-variable "versioning_enabled" {
-  type        = bool
-  description = "Enable or disable versioning"
-  default     = true
-}
-
-variable "force_destroy" {
-  type        = bool
-  description = "Delete all objects from the bucket so that the bucket can be destroyed without error (e.g. `true` or `false`)"
-  default     = true
+  description = "ID of the hosted zone to contain this record  (or specify `parent_zone_name`)"
+  default     = "${AWS_HOSTED_ZONE_ID}"
 }
