@@ -25,7 +25,7 @@ after the name of the site you are creating `my-awesome-blog.env`.
           └───my-awesome-blog.env
 ```
 
-- Site names should be restricted to letters, digits, periods, underscores and hypens.
+- Site names are restricted 63 chars of lowercase letters, digits, periods and hyphens.
 
 - Copy contents of `/app/config/site-data/default-properties.properties` into
 the properties file (`/app/sites/my-awesome-blog.env`) you just created.
@@ -261,6 +261,13 @@ a selection of typography. To change the typography open file at
 ### Some properties and their effects ###
 
 VERBOSE - Causes a more verbose log
+
+### Known Errors and Solutions ###
+
+__Missing Field__
+
+- __Example error message:__ `Cannot query field "tags" on type "MarkdownRemarkFrontmatter".`
+- __Solution:__ Ensure at least one markdown page has the tags field in their frontmatter.
 
 ### References ###
 

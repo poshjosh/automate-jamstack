@@ -12,8 +12,8 @@ ARG TERRAFORM_VERSION="0.12.23"
 
 RUN apk update && apk upgrade \
     && apk add util-linux \
-    && apk add bash git openssh npm yarn \
-    && bash --version && git --version && ssh -V && npm -v && node -v && yarn -v \
+    && apk add bash git openssh npm \
+    && bash --version && git --version && ssh -V && npm -v && node -v \
     && apk add \
      	  ca-certificates \
     	  groff \
@@ -38,7 +38,7 @@ WORKDIR /
 
 COPY ./app/ ./app/
 
-RUN (cd ./app && yarn global add gatsby-cli)
+RUN (cd ./app/sites && npm install -g gatsby-cli)
 
 RUN chmod +x ./app/config/setup-scripts/docker-entrypoint.sh
 

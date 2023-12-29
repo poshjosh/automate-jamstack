@@ -58,7 +58,7 @@ gatsby_develop() {
 gatsby_build() {
     local msg='Building site'
     echo $msg
-    (cd ${g_site_dir} && yarn run build && echo "    SUCCESS: $msg" || echo "    ERROR: $msg")
+    (cd ${g_site_dir} && npm run build && echo "    SUCCESS: $msg" || echo "    ERROR: $msg")
 }
 
 # @see https://medium.com/@kyle.galbraith/how-to-host-a-website-on-s3-without-getting-lost-in-the-sea-e2b82aa6cd38
@@ -93,9 +93,9 @@ gatsby_plugin_s3_deploy() {
 
     echo 'Publishing site to amazon s3'
     if [ "$VERBOSE" = true ]; then
-        (cd ${g_site_dir} && yarn run deploy -y)
+        (cd ${g_site_dir} && npm run deploy -y)
     else
-        (cd ${g_site_dir} && yarn run deploy --silent -y)
+        (cd ${g_site_dir} && npm run deploy --silent -y)
     fi
     echo 'Done publishing site to amazon s3'
 }
@@ -111,7 +111,7 @@ gatsby_setup() {
         echo ""
     else
         echo "  WARNING: Node modules not found."
-        (cd ${g_site_dir} && yarn_add "gatsby-cli") || exit 1
+        (cd ${g_site_dir} && pkgmgr_add "gatsby-cli") || exit 1
         #exit 1
     fi
 

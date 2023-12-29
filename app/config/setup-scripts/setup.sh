@@ -176,7 +176,7 @@ install_plugin_if_not_installed() {
     if [ -d "$plugin_install_dir" ] && [ "$(ls -A $plugin_install_dir)" ]; then
         echo "Plugin already installed: ${2}"
     else
-        (cd ${1} && yarn_add_plugin ${2} ${3}) # the enclosing bracket keeps the change directory within context
+        (cd ${1} && pkgmgr_add_plugin ${2} ${3}) # the enclosing bracket keeps the change directory within context
     fi
 }
 
@@ -266,6 +266,7 @@ update_terraform_cfgs() {
         echo "    SUCCESS: Updated terraform configuration"
     else
          echo "    ERROR: Not updated - terraform configuration"
+         exit 1
     fi
 }
 
@@ -297,6 +298,7 @@ create_or_update_s3_bucket() {
             write_to_file 's3-bucket-created' ${g_site_terraform_dir} ${site_terraform_filename}
         else
             echo "    ERROR: $msgapply"
+            exit 1
         fi
     else
         echo "Terraform already initialized for ${g_site_terraform_dir}"

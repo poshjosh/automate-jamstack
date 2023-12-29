@@ -2,16 +2,16 @@
 
 source ${g_scripts_dir}/functions-util.sh
 
-yarn_add_plugin() {
+pkgmgr_add_plugin() {
 
     local minstalled=false
 
     echo "Dev: ${2}, installing plugin: ${1}"
 
     if [ "${2}" = true ]; then
-        (yarn add ${1} --dev && minstalled=true)
+        (npm install ${1} --save-dev && minstalled=true)
     else
-        (yarn add ${1} && minstalled=true)
+        (npm install ${1} && minstalled=true)
     fi
     if [ "${minstalled}" = true ]; then
         echo "  SUCCESS installing plugin: ${1}"
@@ -20,10 +20,10 @@ yarn_add_plugin() {
     fi
 }
 
-yarn_add() {
-    yarn_add_plugin $1 false
+pkgmgr_add() {
+    pkgmgr_add_plugin $1 false
 }
 
-yarn_add_dev() {
-    yarn_add_plugin $1 true
+pkgmgr_add_dev() {
+    pkgmgr_add_plugin $1 true
 }
