@@ -6,11 +6,13 @@ at the click of a file. All you need are:
 
 - An Amazon account (access key and secret key)
 
+- A git repository where your site content is.
+
 - A domain name (e.g _www.my-cool-website.com_) - optional
 
 Caveat: _You need to have [docker](https://www.docker.com/) installed._
 
-For more information on what `markdown` is scroll to the `markdown` section below
+For more information on what `markdown` is, scroll to the `markdown` section below
 
 ### Building ###
 
@@ -56,6 +58,37 @@ SITE_REPOSITORY_URL=[VALUE REQUIRED]
 
 - Now you are ready to get going. Just open a terminal/command prompt and
 run this script: `scripts/launch-script.sh`
+
+### Customizations ###
+
+Your site content is hosted in a git repository.
+
+#### Assets ####
+
+Place assets in an assets directory at the root of your site. E.g:
+
+```
+my-awesome-blog/
+└───assets/
+    └───banner.jpg
+    └───icon.png
+```
+__Icon__
+
+After adding an icon to your sites assets directory, specify the location of the
+icon in the properties file of your site. Note that the location is relative to
+the `SITE_PAGES_DIR` (i.e. `content/blog`) directory. E.g:
+
+```dotenv
+SITE_ICON_LOCATION=content/blog/assets/icon.png
+SITE_PAGES_DIR=/content/blog
+```
+
+__Banner__
+
+You can specify a banner for your site. Simply place either a
+`banner.jpg` or `banner.png` image in the `assets` directory at
+the root directory of your site.
 
 ### Deploying to Amazon S3 ###
 
