@@ -35,9 +35,8 @@ fi
 docker ps -a | grep "poshjosh-automate-jamstack" && res="y" || res="n"
 if [ "${res}" == "y" ]; then
     echo "Stopping container poshjosh-automate-jamstack"
-    docker container stop poshjosh-automate-jamstack
-    echo "Waiting 7 seconds"
-    timeout /t 7
+    # runs the command for 30s, and if it is not terminated, it will kill it after 10s.
+    timeout --kill-after=10 30 docker container stop poshjosh-automate-jamstack
 fi
 
 echo "Running image poshjosh/automate-jamstack"

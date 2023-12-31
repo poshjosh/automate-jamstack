@@ -11,38 +11,29 @@ g_terraform_dir="${g_config_dir}/terraform"
 g_site_terraform_dir="${g_site_data_dir}/terraform"
 g_sites_dir="./sites"
 g_site_dir="${g_sites_dir}/${SITE_DIR_NAME}"
+g_site_assets_dir="${g_site_dir}${SITE_ASSETS_DIR}"
 
+source ${g_scripts_dir}/configure-aws-cli.sh
 source ${g_scripts_dir}/functions-find.sh
 source ${g_scripts_dir}/functions-gatsby.sh
 source ${g_scripts_dir}/functions-pages.sh
 source ${g_scripts_dir}/functions-util.sh
 source ${g_scripts_dir}/functions-yarn.sh
 
-echo "$(date) - [ Beginning setup ]"
-
 if [ "$VERBOSE" = true ]; then
     env
-    echo "============================================"
+    debug "============================================"
 fi
 
 printloc
-
-site_install_filename='/app-installed.state'
-site_install_file="${g_site_data_dir}${site_install_filename}"
-if [ -f "$site_install_file" ]; then
-    firstrun=false
-else
-    firstrun=true
-    write_to_file 'installed' ${g_site_data_dir} $site_install_filename
-fi
-echo "First run: $firstrun"
 
 ensure_aws_cli_configured() {
     local aws_config_file="${HOME}/.aws/config"
     local aws_cred_file="${HOME}/.aws/credentials"
     if [ -f "$aws_config_file" ] && [ -f "$aws_cred_file" ]; then
-        echo "AWS CLI already configured"
+        info "AWS CLI already configured"
     else
+        info 'Configuring AWS CLI'
         chmod +x ${g_scripts_dir}/configure-aws-cli.sh
         /bin/bash ${g_scripts_dir}/configure-aws-cli.sh
     fi
@@ -56,19 +47,21 @@ is_site_newly_imported=false
 #
 import_site() {
 
+    info "Importing site from $1"
+
     if [ -z ${1+x} ] || [ "$1" == '' ]; then
-        echo "A source for the site was not specified will use contents of directory: ${g_site_dir}"
+        debug "A source for the site was not specified will use contents of directory: ${g_site_dir}"
     else
 
         if [ -d "${g_site_dir}" ]; then
-            echo "Deleting ${g_site_dir}"
+            debug "Deleting ${g_site_dir}"
             rm -Rf "${g_site_dir}"
         fi
 
         local tmp_dir="${g_sites_dir}/temp"
 
         if [ -d "$tmp_dir" ]; then
-            echo "Deleting ${tmp_dir}"
+            debug "Deleting ${tmp_dir}"
             rm -Rf $tmp_dir
         fi
 
@@ -79,7 +72,7 @@ import_site() {
         if [ -f "$pkg_json" ]; then
             find_and_replace_env_variables_in_file ${pkg_json}
         else
-             echo "File not found: $pkg_json"
+             debug "File not found: $pkg_json"
         fi
 
         local site_source=$tmp_dir
@@ -93,7 +86,7 @@ import_site() {
 
         (cd ${g_sites_dir} && (gatsby_new_site "${site_source}" && is_site_newly_imported=true))
 
-        echo "Deleting ${tmp_dir}"
+        debug "Deleting ${tmp_dir}"
 
         rm -Rf ${tmp_dir}
     fi
@@ -107,7 +100,7 @@ check_site_imported() {
     else
         is_site_already_imported=false;
     fi
-    echo "Site was already imported: $is_site_already_imported"
+    debug "Site was already imported: $is_site_already_imported"
 }
 
 check_site_imported
@@ -115,7 +108,7 @@ check_site_imported
 if [ "${is_site_already_imported}" = false ] || [ "$REFRESH_SITE" = true ]; then
 
     if [ -d "${g_site_dir}" ]; then
-        echo "Deleting ${g_site_dir}"
+        debug "Deleting ${g_site_dir}"
         rm -Rf "${g_site_dir}"
     fi
 
@@ -125,14 +118,16 @@ fi
 
 if [ "$REFRESH_SITE_CACHE" = true ] && [ "$is_site_newly_imported" = false ]; then
 
+    info "Refreshing site cache"
+
     site_cache_dir="${g_site_dir}/.cache"
 
     deleting_cache_msg="Deleting cache at $site_cache_dir"
 
-    echo $deleting_cache_msg
+    debug $deleting_cache_msg
 
     if [ -d "$site_cache_dir" ]; then
-        (rm -Rf "$site_cache_dir" && "    SUCCESS: $deleting_cache_msg" || "    ERROR: $deleting_cache_msg");
+        (rm -Rf "$site_cache_dir" && "SUCCESS: $deleting_cache_msg" || "ERROR: $deleting_cache_msg");
     fi
 fi
 
@@ -144,7 +139,7 @@ check_site_pages_imported() {
     else
         is_site_pages_already_imported=false;
     fi
-    echo "Site pages are imported: $is_site_pages_already_imported"
+    debug "Site pages are imported: $is_site_pages_already_imported"
 }
 
 import_site_pages() {
@@ -153,13 +148,15 @@ import_site_pages() {
 
     if [ "${is_site_pages_already_imported}" = false ] || [ "$REFRESH_SITE_PAGES" = true ]; then
 
+        info "Importing site pages from ${SITE_PAGES_SOURCE} to ${site_pages_loc}"
+
         if [ -d "$site_pages_loc" ]; then
-            echo "Removing directory: ${site_pages_loc}"
+            debug "Removing directory: ${site_pages_loc}"
             rm -Rf "$site_pages_loc";
         fi
 
         if [ ! -d "${site_pages_loc}" ]; then
-            echo "Creating directory: ${site_pages_loc}"
+            debug "Creating directory: ${site_pages_loc}"
             mkdir -p ${site_pages_loc}
         fi
 
@@ -171,34 +168,25 @@ if [ "$is_site_newly_imported" = false ]; then
     import_site_pages
 fi
 
-install_plugin_if_not_installed() {
-    local plugin_install_dir="${1}/node_modules/${2}"
-    if [ -d "$plugin_install_dir" ] && [ "$(ls -A $plugin_install_dir)" ]; then
-        echo "Plugin already installed: ${2}"
-    else
-        (cd ${1} && pkgmgr_add_plugin ${2} ${3}) # the enclosing bracket keeps the change directory within context
-    fi
-}
-
-echo 'Updating configuration'
-
 find_and_replace_variables() {
+
+    info "Updating configuration"
 
     local file="${g_scripts_dir}/list_of_files_containing_variables.txt"
 
-    echo "Will find and replace all variables in files listed in $file"
-    echo "    BEGIN FIND AND REPLACE"
-    echo "======================================================================"
-    echo ""
-    echo "Function to apply = custom_find_and_replace_variables_in_file"
+    debug "Will find and replace all variables in files listed in $file"
+    debug "BEGIN FIND AND REPLACE"
+    debug "======================================================================"
+    debug ""
+    debug "Function to apply = custom_find_and_replace_variables_in_file"
     act_on_files_listed_in_file $file custom_find_and_replace_variables_in_file
 
-    echo ""
-    echo "Function to apply = find_and_replace_env_variables_in_file"
+    debug ""
+    debug "Function to apply = find_and_replace_env_variables_in_file"
     act_on_files_listed_in_file $file find_and_replace_env_variables_in_file
 
-    echo "    END FIND AND REPLACE"
-    echo "======================================================================"
+    debug "END FIND AND REPLACE"
+    debug "======================================================================"
 }
 
 find_and_replace_variables
@@ -217,13 +205,11 @@ fi
 
 update_terraform_cfgs() {
 
-    echo "Updating terraform configuration"
-
     mkdir -p ${g_site_terraform_dir}
 
     if [ -z ${AWS_S3_BUCKET_NAME+x} ] || [ "$AWS_S3_BUCKET_NAME" == '' ]; then
 
-        echo "An s3 bucket name was not specified. Will generate one"
+        debug "An s3 bucket name was not specified. Will generate one"
 
         local epoch_time=$(date '+%s')
         local raw_name="${AWS_S3_BUCKET_NAME_PREFIX}-${SITE_DIR_NAME}-${epoch_time}"
@@ -235,38 +221,40 @@ update_terraform_cfgs() {
 
         if [ "$bucketname_set" = true ]; then
 
-            echo "  SUCCESS: set AWS_S3_BUCKET_NAME = $AWS_S3_BUCKET_NAME"
+            debug "SUCCESS: set AWS_S3_BUCKET_NAME = $AWS_S3_BUCKET_NAME"
 
             props_file="${g_site_dir}.env"
 
-            echo "Updating $props_file with environment AWS_S3_BUCKET_NAME"
+            debug "Updating $props_file with environment AWS_S3_BUCKET_NAME"
 
             # Update our persistent store with the updated list of environment
             # variables which should now contain AWS_S3_BUCKET_NAME
-            env > $props_file && "  SUCCESS: Saved bucket name" || "  ERROR: Bucket name not saved"
+            env > $props_file && "SUCCESS: Saved bucket name" || "ERROR: Bucket name not saved"
 
         else
-            echo "  ERROR: Not set- AWS_S3_BUCKET_NAME = $AWS_S3_BUCKET_NAME"
+            error ": Not set- AWS_S3_BUCKET_NAME = $AWS_S3_BUCKET_NAME"
         fi
     else
-        echo "Existing AWS_S3_BUCKET_NAME = $AWS_S3_BUCKET_NAME"
+        debug "Existing AWS_S3_BUCKET_NAME = $AWS_S3_BUCKET_NAME"
     fi
 
     if [ -z ${AWS_S3_BUCKET_NAME+x} ] || [ "$AWS_S3_BUCKET_NAME" == '' ]; then
-        "Value not set for AWS_S3_BUCKET_NAME. S3 bucket will not be created"
+        warn "Value not set for AWS_S3_BUCKET_NAME. S3 bucket will not be created"
         terraform_ok=false
     fi
 
     if [ "$terraform_ok" = true ]; then
 
+        info "Updating terraform configuration"
+
         cp -R "${g_terraform_dir}/." ${g_site_terraform_dir}
 
         find_and_replace_variables
 
-        echo "    SUCCESS: Updated terraform configuration"
+        debug "SUCCESS: Updated terraform configuration"
     else
-         echo "    ERROR: Not updated - terraform configuration"
-         exit 1
+        error ": Not updated - terraform configuration"
+        exit 1
     fi
 }
 
@@ -284,24 +272,24 @@ create_or_update_s3_bucket() {
 
     if [ "$virgin" = true ] || [ "$AWS_S3_UPDATE_BUCKET" = true ]; then
 
+        info "Creating/Updating S3 bucket using terraform ${g_site_terraform_dir}"
+
         local msginit='Intializing s3 bucket provisioner'
-        echo $msginit
+        debug $msginit
         terraform_init ${g_site_terraform_dir} \
-            && echo "    SUCCESS: $msginit" || echo "    ERROR: $msginit"
+            && debug "SUCCESS: $msginit" || error ": $msginit"
 
         local msgapply='Creating/Updating s3 bucket'
-        echo $msgapply
+        debug $msgapply
         local applied=false;
         terraform_apply ${g_site_terraform_dir} && applied=true || applied=false
         if [ "$applied" = true ]; then
-            echo "    SUCCESS: $msgapply"
+            debug "SUCCESS: $msgapply"
             write_to_file 's3-bucket-created' ${g_site_terraform_dir} ${site_terraform_filename}
         else
-            echo "    ERROR: $msgapply"
+            error ": $msgapply"
             exit 1
         fi
-    else
-        echo "Terraform already initialized for ${g_site_terraform_dir}"
     fi
 }
 
@@ -320,6 +308,8 @@ update_pages() {
     local backupdir="${g_site_dir}/backups${SITE_PAGES_DIR}"
 
     if [ -d "${pagesdir}" ]; then
+
+        info "Updating pages"
       
         add_frontmatter_to_markdown ${pagesdir}
         update_markdown_links ${pagesdir} ${backupdir}
@@ -327,6 +317,10 @@ update_pages() {
         if [ "$PAGE_ADD_TABLE_OF_CONTENT" = true ]; then
             add_tableofcontents_to_markdown ${pagesdir} $g_pandoc_template_file
         fi
+
+        debug "Copying assets from ${pagesdir}/assets to ${g_site_assets_dir}"
+        # The * should be outside the double quotes
+        cp -Rf "${pagesdir}/assets"/* "${g_site_assets_dir}"
     fi
 }
 
@@ -334,10 +328,39 @@ update_pages() {
 #
 update_pages
 
+info "Setting up site"
+
 gatsby_setup
 
-if [ "$PROFILE" == 'prod' ]; then
-    gatsby_deploy
-fi
+# @see https://medium.com/@kyle.galbraith/how-to-host-a-website-on-s3-without-getting-lost-in-the-sea-e2b82aa6cd38
+# If your website domain is www.my-awesome-site.com, then your bucket name must
+# be www.my-awesome-site.com
+aws_cli_deploy() {
 
-echo 'Completed setup'
+    # Resulting URL format:  http://<AWS_S3_BUCKET_NAME>.s3.<AWS_REGION>.amazonaws.com/
+#    (aws s3 website s3://${AWS_S3_BUCKET_NAME}/ --index-document index.html --error-document error.html) \
+#        && debug "SUCCESS configuring AWS s3 bucket ${AWS_S3_BUCKET_NAME} for website hosting" \
+#        || error " configuring AWS s3 bucket ${AWS_S3_BUCKET_NAME} for website hosting" \
+
+# If using this make sure you check the reference link above for policy JSON
+#    aws s3api put-bucket-policy --bucket <AWS_S3_BUCKET_NAME> --policy file://policy.json
+
+    # Map your domain name www.my-awesome-site.com, to your S3 website url
+    # <AWS_S3_BUCKET_NAME>.s3.us-east-2.amazonaws.com. This mapping is often
+    # referred to as a CNAME record inside of your Domain Name Servers (DNS) records.
+    #
+    # - Create a record for a host like www
+    # - The record type must be CNAME (Canonical name)
+    # - The value must be your S3 website url www.<AWS_S3_BUCKET_NAME>.s3.<AWS_REGION>.amazonaws.com
+
+    ensure_aws_cli_configured
+
+    # The command gatsby build will build your site locally, updating the public/*
+    # files
+    aws s3 cp ${g_site_dir}/public/ s3://${AWS_S3_BUCKET_NAME}/ --recursive
+}
+
+if [ "$PROFILE" == 'prod' ]; then
+    info "Deploying site"
+    aws_cli_deploy
+fi

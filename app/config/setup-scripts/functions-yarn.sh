@@ -6,7 +6,7 @@ pkgmgr_add_plugin() {
 
     local minstalled=false
 
-    echo "Dev: ${2}, installing plugin: ${1}"
+    debug "Dev: ${2}, installing plugin: ${1}"
 
     if [ "${2}" = true ]; then
         (npm install ${1} --save-dev && minstalled=true)
@@ -14,9 +14,9 @@ pkgmgr_add_plugin() {
         (npm install ${1} && minstalled=true)
     fi
     if [ "${minstalled}" = true ]; then
-        echo "  SUCCESS installing plugin: ${1}"
+        debug "SUCCESS installing plugin: ${1}"
     else
-        echo "  ERROR installing plugin: ${1}"
+        error " installing plugin: ${1}"
     fi
 }
 

@@ -161,7 +161,7 @@ common markdown](https://commonmark.org/help/)
 
 Well composed markdown documents contain front matter.
 
-### Front matter ###
+### Frontmatter ###
 
 - Add `frontmatter` at the topmost of all your pages. `Frontmatter` starts with
 a single line of 3 hyphens `---` and ends with same. Example of `frontmatter`
@@ -173,8 +173,16 @@ date: "2019-11-11"
 title: "README"
 description: "Usage instructions"
 lang: "en-us"
+tags: ["readme", "usage instructions", "useful info"]
 ---
 ```
+
+- If you don't add frontmatter, one will be automatically generated for you.
+
+- If you don't specify a title in frontmatter, article file names will be 
+used as titles. In that case, dashes (-) will be replaced with spaces ( ). 
+Two consecutive dashes or underscores will be treated as ( - ). For example:
+`Abc-def,_ghi--jkl` will be converted to: `Abc def, ghi - jkl`
 
 ### Linking to other markdown ####
 

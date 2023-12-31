@@ -29,7 +29,7 @@ find_and_replace_text_in_text() {
 #
 find_and_replace_env_variables_in_text() {
 
-    echo "    ENTERED find_and_replace_env_variables_in_text text=$1"
+    debug "ENTERED find_and_replace_env_variables_in_text text=$1"
 
     local holder=$1
 
@@ -61,7 +61,7 @@ find_and_replace_env_variables_in_text() {
 
     return_value_find_and_replace_env_variables_in_text=$holder
 
-    echo "    EXITING find_and_replace_env_variables_in_text return_value=$return_value_find_and_replace_env_variables_in_text"
+    debug "EXITING find_and_replace_env_variables_in_text return_value=$return_value_find_and_replace_env_variables_in_text"
 }
 
 # arg 1 - target file
@@ -86,7 +86,7 @@ find_and_replace_text_in_file() {
 #
 find_and_replace_env_variables_in_file() {
 
-    echo "    ENTERED find_and_replace_env_variables_in_file file='$1'"
+    debug "ENTERED find_and_replace_env_variables_in_file file='$1'"
 
     local temp_env_file=$(mktemp)
 
@@ -119,7 +119,7 @@ find_and_replace_env_variables_in_file() {
 #
 find_and_replace_text_in_dir() {
 
-    echo "    ENTERED find_and_replace_text_in_dir target-dir='$1', to-replace='$2', replacement='$3'"
+    debug "ENTERED find_and_replace_text_in_dir target-dir='$1', to-replace='$2', replacement='$3'"
 
     local tgt=$1
     if [[ ${tgt} == /* ]]; then tgt="${tgt:1}"; fi # remove first char
@@ -138,7 +138,7 @@ find_and_replace_text_in_dir() {
         done
 
     else
-        echo "    WARNING: Directory not found. Find and replace will not be carried out for $tgt"
+        warn ": Directory not found. Find and replace will not be carried out for $tgt"
     fi
 }
 
@@ -148,7 +148,7 @@ find_and_replace_text_in_dir() {
 #
 act_on_file() {
 
-    echo "    ENTERED act_on_file path='$1', function='$2'"
+    debug "ENTERED act_on_file path='$1', function='$2'"
 
     find_and_replace_env_variables_in_text $1
 
@@ -175,7 +175,7 @@ act_on_file() {
         done
 
     else
-        echo "    WARNING: Not found: $path"
+        warn ": Not found: $path"
     fi
 }
 
@@ -185,7 +185,7 @@ act_on_file() {
 #
 act_on_files_listed_in_file() {
 
-    echo "    ENTERED act_on_files_listed_in_file file='$1', function='$2'"
+    debug "ENTERED act_on_files_listed_in_file file='$1', function='$2'"
 
     while read line; do
 
@@ -208,7 +208,7 @@ act_on_files_listed_in_file() {
 
 custom_find_and_replace_variables_in_file() {
 
-    echo "    ENTERED custom_find_and_replace_variables_in_file file=$1"
+    debug "ENTERED custom_find_and_replace_variables_in_file file=$1"
 
     # We seperate these 2 from the rest to fulfill the following requirement:
     #

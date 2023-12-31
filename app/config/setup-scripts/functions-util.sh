@@ -1,23 +1,56 @@
 #!/bin/bash
 
+log() {
+
+  local parts=($1)
+  local first="${parts[0]}"
+  local log=true
+
+  if [ ! -z "${LOG_TAGS+x}" ] && [ "$LOG_TAGS" != '' ]; then
+    if [[ "$LOG_TAGS" != *"$first"* ]]; then
+      log=false
+    fi
+  fi
+
+  if [ "$log" = true ]; then
+    echo "$(date '+%T') ${1}"
+  fi
+}
+
+error () {
+    log "ERROR ${1}"
+}
+
+warn () {
+    log "WARNING ${1}"
+}
+
+info () {
+    log "INFO ${1}"
+}
+
+debug () {
+    log "DEBUG ${1}"
+}
+
+trace() {
+    log "TRACE ${1}"
+}
+
 printloc() {
 
     local msg="Current directory: $(pwd)"
 
     if [ "$VERBOSE" = true ]; then
-        echo "$(date '+%T') $msg" && ls -a
+        trace "$msg" && ls -a
     else [ "$PROFILE" != 'prod' ]
-        echo "$(date '+%T') $msg";
+        debug "$msg";
     fi
-}
-
-trace() {
-    if [ "$VERBOSE" = true ]; then echo "$(date '+%T') ${1}"; fi
 }
 
 string_length() {
     local slen=$(echo -n $1 | wc -m)
-    echo "Length: $slen of text: $1"
+    debug "Length: $slen of text: $1"
     echo $slen
 }
 
@@ -66,8 +99,8 @@ extract_date() {
 }
 
 move_dir_content_to_parent() {
-    echo "Moving content of current directory up one level"
-    echo "For this process, IGNORE THIS WARNING -> mv: can't rename '.': Resource busy"
+    debug "Moving content of current directory up one level"
+    info "For next command, IGNORE THIS WARNING -> mv: can't rename '.': Resource busy"
     printloc
     find . -maxdepth 1 -exec mv {} .. \;
     (cd .. && printloc)
@@ -77,7 +110,7 @@ emplace_zip_file_content_and_delete_zip_file() {
 
     local files=$(find "${1}" -maxdepth 1)
     local file_count=${#files[@]}
-    echo "Found $file_count files in current directory"
+    debug "Found $file_count files in current directory"
 
     if [ $file_count == 1 ]; then
         local dir=''
@@ -87,31 +120,31 @@ emplace_zip_file_content_and_delete_zip_file() {
             trace "$fname"
 
             if [ "$fname" == '.' ] || [ "$fname" == '..' ]; then
-                echo "Skipping file: $fname"
+                debug "Skipping file: $fname"
             elif [ "$fname" == "$1" ]; then
-                echo "Skipping $fname"
+                debug "Skipping $fname"
             elif [[ ${fname} == *.zip ]]; then
-                echo "Removing zip file: $fname"
+                debug "Removing zip file: $fname"
                 rm -f "${fname}"
             elif [ -d "$fname" ]; then
-                echo "Found directory: $fname"
+                debug "Found directory: $fname"
                 dir=$fname
             else
-                echo "    WARNING: What would you have me do with this file? $fname"
+                warn ": What would you have me do with this file? $fname"
             fi
         done
 
         if [ "$dir" == '' ]; then
-            echo "    ERROR: Directory unpacked from .zip file not found"
+            error ": Directory unpacked from .zip file not found"
         else
-            echo "Found directory: $dir"
+            debug "Found directory: $dir"
             (cd ${dir} && move_dir_content_to_parent)
-            echo "Deleting ${dir}"
+            debug "Deleting ${dir}"
             rm -Rf ${dir}
         fi
     fi
 
-    (cd ${1} && (echo "Removing zip files in: $1" & rm -Rf *.zip))
+    (cd ${1} && (debug "Removing zip files in: $1" & rm -Rf *.zip))
 }
 
 # arg 1 - source to download from
@@ -120,16 +153,16 @@ download_and_unzip_into_dir() {
 
     local msg="Downloading from: ${1}"
 
-    (cd ${2} && curl -LO $1) && echo "    SUCCESS: $msg" || echo "    ERROR: $msg"
+    (cd ${2} && curl -LO $1) && debug "SUCCESS: $msg" || error ": $msg"
 
     (cd ${2} && printloc)
 
     if [[ ${1} == *.zip ]]; then
 
         msg="Unzipping downloaded content into: ${2}"
-        echo "${msg}"
+        debug "${msg}"
 
-        (cd ${2} && unzip *.zip) && echo "    SUCCESS: $msg" || echo "    ERROR: $msg"
+        (cd ${2} && unzip -q *.zip) && debug "SUCCESS: $msg" || error ": $msg"
     fi
 
     emplace_zip_file_content_and_delete_zip_file ${2}
@@ -143,9 +176,9 @@ git_clone_into_dir() {
 
     local msg="Performing git clone from ${1} into: ${2}"
 
-    echo "${msg}"
+    debug "${msg}"
 
-    git clone ${1} ${2} && echo "    SUCCESS: $msg" || echo "    ERROR: $msg"
+    git clone ${1} ${2} && debug "SUCCESS: $msg" || error ": $msg"
 
     (cd ${2} && rm -Rf '.git')
 
@@ -157,11 +190,11 @@ git_clone_into_dir() {
 copy_dir_contents() {
 
     local msg="Copying directory contents from ${1} to ${2}"
-    echo "${msg}"
+    debug "${msg}"
 
     (cd ${1} && printloc)
 
-    cp -R "${1}/." ${2} && echo "    SUCCESS: $msg" || echo "    ERROR: $msg"
+    cp -R "${1}/." ${2} && debug "SUCCESS: $msg" || error ": $msg"
 
     (cd ${2} && printloc)
 }

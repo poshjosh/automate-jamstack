@@ -4,7 +4,7 @@ source ${g_scripts_dir}/functions-util.sh
 
 add_tableofcontents_to_markdown() {
 
-    echo "Adding table of contents to all .md files in ${1}"
+    debug "Adding table of contents to all .md files in ${1}"
 
     local files=$(find ${1} -iname '*.md' -type f)
 
@@ -23,7 +23,7 @@ add_tableofcontents_to_markdown() {
             pandoc -s --toc -o $fname $fname
         else
             if [ -z "$toc_heading" ] || [ "$toc_heading" == '' ]; then
-                echo "    WARNING. Property PAGE_TABLE_OF_CONTENT_HEADING not found. Heading will not be added to table of content"
+                warn ". Property PAGE_TABLE_OF_CONTENT_HEADING not found. Heading will not be added to table of content"
                 pandoc -s --toc -o $fname $fname
             else
                 # Put values in quote for toc-title and template
@@ -38,6 +38,7 @@ convert_title_to_tags()  {
     update=$(echo $update | tr -s ' ')
     update=$(echo $update | sed -e "s/ /\", \"/g")
     update="[\"$update\"]"
+    update="$update"
     echo "$update"
 }
 
@@ -64,17 +65,17 @@ add_frontmatter() {
 
     local name_without_ext=$(basename $1 .md)
 
-    local mtitle=$(echo $name_without_ext | sed -e "s/[-|_]/ /g")
+    # Convert: The-good,_bad--latest to: The good, bad - latest
+    local mtitle=$(echo $name_without_ext | sed -e "s/[-|_]/ /g" -e "s/  / - /g")
 
-    local mtags=$(convert_title_to_tags "$mtitle")
+    local mtags=$(convert_title_to_tags "$name_without_ext")
 
-    local frontmatter="---\npath: \"${1}\"\ndate: \"${mdate}\"\ntitle: \"${mtitle}\"\ndescription: \"${SITE_NAME} - ${mtitle}\"\ntags: ${mtags}\nlang: \"en-us\"\n---\n"
+    local frontmatter="---\npath: \"${1}\"\ndate: \"${mdate}\"\ntitle: \"${mtitle}\"\ndescription: \"${SITE_NAME} - ${mtitle}\"\ntags: ${mtags}\nlang: \"en-us\"\n---\n\n"
 
     trace "Front matter: $frontmatter"
+    #log "functions-pages Front matter: $frontmatter"
 
-    sed -i "1s;^;${frontmatter}\n;" ${1}
-
-#    sed -i 's,_{\(author:\)\s.*}_,,g' $1
+    sed -i "1s~^~${frontmatter}~" ${1} || error "Failed to add frontmatter"
 }
 
 # Arg 1 - The file to Search
@@ -92,7 +93,7 @@ get_first_non_space_line() {
 
 add_frontmatter_to_markdown() {
 
-    echo "Adding frontmatter to all .md files in ${1}"
+    debug "Adding frontmatter to all .md files in ${1}"
 
     local files=$(find ${1} -iname '*.md' -type f)
 
@@ -135,7 +136,7 @@ add_frontmatter_to_markdown() {
 
 update_links() {
 
-    echo "Updating $3 to $4 in all $2 files in ${1}"
+    debug "Updating $3 to $4 in all $2 files in ${1}"
 
     local files=$(find ${1} -iname "${2}" -type f)
 
@@ -149,8 +150,8 @@ update_links() {
 #        printf "\nFile: %s\n" $fname
 
         (sed -i "s^${3}^${4}^g" $fname) \
-            && trace "  SUCCESS replaced $3 with $4 in $fname" \
-            || trace "  ERROR replacing $3 with $4 in $fname"
+            && trace "SUCCESS replaced $3 with $4 in $fname" \
+            || trace "ERROR replacing $3 with $4 in $fname"
 
     done
 }
@@ -162,10 +163,10 @@ update_markdown_links() {
 
     if [ ! -d "$bak" ]; then
 
-        echo "Creating directory: $bak"
+        debug "Creating directory: $bak"
         mkdir -p $bak
 
-        echo "Copying contents of: $src to: $bak"
+        debug "Copying contents of: $src to: $bak"
         cp -R "${src}/." ${bak}
     fi
 
