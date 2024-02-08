@@ -9,7 +9,7 @@ set -o pipefail
 
 printf "\nEnter site name without http://, e.g my-site.com\n"
 
-read site_name
+read -r site_name
 
 # Using . did not work here
 # "${HOME}/Documents/dev/GitHub/automate-jamstack"
