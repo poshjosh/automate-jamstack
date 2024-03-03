@@ -1,10 +1,39 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-printf "\nEnter extension of files to convert to markdown e.g pdf\n"
+set -euo pipefail
 
-read FILE_EXTENSION
+DIR='.'
+EXT='docx'
 
-dir=$(pwd)
+# Usage: ./<script-file>.sh -d <DIR> -e <EXT>
+
+while getopts d:e: flag
+do
+    case "${flag}" in
+        d) DIR=${OPTARG};;
+        e) EXT=${OPTARG};;
+        *) echo "Invalid flag ${OPTARG}"
+    esac
+done
+
+# By getting the script's dir, we can run the script from any where. 
+function getScriptDir() {
+  local script_path="${BASH_SOURCE[0]}"
+  local script_dir;
+  while [ -L "${script_path}" ]; do
+    script_dir="$(cd -P "$(dirname "${script_path}")" >/dev/null 2>&1 && pwd)"
+    script_path="$(readlink "${script_path}")"
+    [[ ${script_path} != /* ]] && script_path="${script_dir}/${script_path}"
+  done
+  script_path="$(readlink -f "${script_path}")"
+  cd -P "$(dirname -- "${script_path}")" >/dev/null 2>&1 && pwd
+}
+
+script_dir=$(getScriptDir)
+
+cd "$script_dir" || (echo "Could not change to script directory: $script_dir" && exit 1)
+
+dir="${DIR:-.}"
 
 printf "\nWorking directory: %s\n" "$dir"
 
@@ -13,7 +42,7 @@ declare -i convert_count=0
 unwanted_prefix="~$"
 
 IFS=$'\n'; set -f
-for f in $(find "$dir" -name "*.$FILE_EXTENSION"); do
+for f in $(find "$dir" -name "*.$EXT"); do
   printf "\nSource: %s" "$f"
   filename=$(basename "$f")
   if [[ "$filename" == "$unwanted_prefix"* ]]; then
@@ -30,7 +59,7 @@ for f in $(find "$dir" -name "*.$FILE_EXTENSION"); do
   new_filename=$(basename "$new_file")
   new_file="$new_dir/$new_filename"
   printf "\nTarget: %s\n" "$new_file"
-  pandoc --standalone --table-of-contents=true --from "$FILE_EXTENSION" --to markdown_strict "$f" --output "$new_file"
+  pandoc --standalone --table-of-contents=true --from "$EXT" --to markdown_strict "$f" --output "$new_file"
   convert_count=$((convert_count+1))
 done
 unset IFS; set +f
