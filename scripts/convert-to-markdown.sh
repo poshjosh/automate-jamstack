@@ -59,7 +59,13 @@ for f in $(find "$dir" -name "*.$EXT"); do
   new_filename=$(basename "$new_file")
   new_file="$new_dir/$new_filename"
   printf "\nTarget: %s\n" "$new_file"
-  pandoc --standalone --table-of-contents=true --from "$EXT" --to markdown_strict "$f" --output "$new_file"
+
+  if [[ "$EXT" == "txt" ]]; then
+    mv -- "$f" "${new_file%.txt}.md"
+  else
+    pandoc --standalone --table-of-contents=true --from "$EXT" --to markdown_strict "$f" --output "$new_file"
+  fi
+
   convert_count=$((convert_count+1))
 done
 unset IFS; set +f
