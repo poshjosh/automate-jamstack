@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
+[[ -n ${DEBUG:-} ]] && set -o xtrace
+
+#@echo off
 
 DIR='.'
 EXT='docx'
@@ -12,7 +15,7 @@ do
     case "${flag}" in
         d) DIR=${OPTARG};;
         e) EXT=${OPTARG};;
-        *) echo "Invalid flag ${OPTARG}"
+        *) exit 1;;
     esac
 done
 
@@ -70,4 +73,5 @@ for f in $(find "$dir" -name "*.$EXT"); do
 done
 unset IFS; set +f
 
-printf "\nConverted %s files to markdown\n" "$convert_count"
+printf "\nConverted %s files to markdown" "$convert_count"
+printf "\nSUCCESS\n"

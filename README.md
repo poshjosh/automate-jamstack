@@ -57,7 +57,7 @@ SITE_REPOSITORY_URL=[VALUE REQUIRED]
 - From the above, you need a public git repository, from where your site content will be pulled.
 
 - Now you are ready to get going. Just open a terminal/command prompt and
-run this script: `scripts/launch-script.sh`
+run this script: `scripts/quick-run.sh`
 
 ### Customizations ###
 
@@ -121,7 +121,7 @@ domain service. The service where you purchased your domain name `my-awesome-blo
 
 ### Run the app ###
 
-- Open a terminal/command prompt and run this script: `scripts/launch-script.sh`
+- Open a terminal/command prompt and run this script: `scripts/quick-run.sh`
 - It could take a while. Wait till you see a message like: `You can now view [Site Name] in the browser.`
 - Browse to http://localhost:8000 to view you website on your local machine.
 
