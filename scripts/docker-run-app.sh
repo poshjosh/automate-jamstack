@@ -29,7 +29,7 @@ do
     esac
 done
 
-[[ -n ${VERBOSE:-} ]] && set -o xtrace
+[ "${VERBOSE}" = "true" ] || [ "$VERBOSE" = true ] && set -o xtrace
 
 # By getting the script's dir, we can run the script from any where. 
 function getScriptDir() {
@@ -82,7 +82,7 @@ printf "\nWill mount: %s/app and use port %s" "${DIR}" "${PORT}"
 if [ "${SKIP_RUN}" = "true" ] || [ "$SKIP_RUN" = true ]; then
     printf "\nSkipping app run, since SKIP_RUN is true"
 else
-    printf "\nRunning image: %S" "${IMAGE}"
+    printf "\nRunning image: %s" "${IMAGE}"
     docker run --name "$container_name" --rm -v "${DIR}/app":/app \
         --env-file "${ENV_FILE}" \
         -u 0 -p "${PORT}:${PORT}" -e "APP_PORT=$PORT" "${IMAGE}"

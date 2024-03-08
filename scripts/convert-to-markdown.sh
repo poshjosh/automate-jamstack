@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-[[ -n ${VERBOSE:-} ]] && set -o xtrace
 
 #@echo off
 
@@ -22,6 +21,8 @@ do
         *) exit 1;;
     esac
 done
+
+[ "${VERBOSE}" = "true" ] || [ "$VERBOSE" = true ] && set -o xtrace
 
 # By getting the script's dir, we can run the script from any where. 
 function getScriptDir() {
@@ -62,9 +63,6 @@ for f in $(find "$dir" -name "*.$EXT"); do
   cd "$dir" || exit 1
   mkdir -p "$fdir"
   new_dir="$dir/$fdir"
-  if [ "${VERBOSE}" = "true" ] || [ "$VERBOSE" = true ]; then
-    printf "\nCreated dir: %s" "$new_dir"
-  fi
   new_file=$(echo "${f%.*}.md" | sed -e "s^${dir}^${new_dir}^1" -e "s/ /-/g")
   new_filename=$(basename "$new_file")
   new_file="$new_dir/$new_filename"
