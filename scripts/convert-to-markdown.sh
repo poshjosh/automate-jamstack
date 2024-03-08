@@ -1,20 +1,24 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-[[ -n ${DEBUG:-} ]] && set -o xtrace
+[[ -n ${VERBOSE:-} ]] && set -o xtrace
 
 #@echo off
 
+# Usage: ./<script-file>.sh -d <DIR> -e <EXT> -s <true|false, skip run> -v <true|false, verbose>
+
 DIR='.'
 EXT='docx'
+SKIP_CONVERT=false
+VERBOSE=false
 
-# Usage: ./<script-file>.sh -d <DIR> -e <EXT>
-
-while getopts d:e: flag
+while getopts d:e:s:v: flag
 do
     case "${flag}" in
         d) DIR=${OPTARG};;
         e) EXT=${OPTARG};;
+        s) SKIP_CONVERT=${OPTARG};;
+        v) VERBOSE=${OPTARG};;
         *) exit 1;;
     esac
 done
@@ -49,7 +53,7 @@ for f in $(find "$dir" -name "*.$EXT"); do
   printf "\nSource: %s" "$f"
   filename=$(basename "$f")
   if [[ "$filename" == "$unwanted_prefix"* ]]; then
-    printf "\nSkipping: %s\n" "$f"
+    printf "\nSkipping due to unwanted prefix: %s\n" "$f"
     continue
   fi
 
@@ -58,15 +62,22 @@ for f in $(find "$dir" -name "*.$EXT"); do
   cd "$dir" || exit 1
   mkdir -p "$fdir"
   new_dir="$dir/$fdir"
-  new_file=$(echo "${f%.*}.md" | sed -e "s^${dir}^${new_dir}^g" -e "s/ /-/g")
+  if [ "${VERBOSE}" = "true" ] || [ "$VERBOSE" = true ]; then
+    printf "\nCreated dir: %s" "$new_dir"
+  fi
+  new_file=$(echo "${f%.*}.md" | sed -e "s^[${dir}]^${new_dir}^" -e "s/ /-/g")
   new_filename=$(basename "$new_file")
   new_file="$new_dir/$new_filename"
-  printf "\nTarget: %s\n" "$new_file"
 
-  if [[ "$EXT" == "txt" ]]; then
-    mv -- "$f" "${new_file%.txt}.md"
+  printf "\nTarget: %s\n" "$new_file"
+  if [ "${SKIP_CONVERT}" = "true" ] || [ "$SKIP_CONVERT" = true ]; then
+    printf "\nSkipping because SKIP is true: %s\n" "$f"
   else
-    pandoc --standalone --table-of-contents=true --from "$EXT" --to markdown_strict "$f" --output "$new_file"
+    if [[ "$EXT" == "txt" ]]; then
+      cp "$f" "${new_file}"
+    else
+      pandoc --standalone --table-of-contents=true --from "$EXT" --to markdown_strict "$f" --output "$new_file"
+    fi
   fi
 
   convert_count=$((convert_count+1))

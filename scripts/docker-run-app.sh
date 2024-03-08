@@ -3,16 +3,17 @@
 set -o errexit
 set -o nounset
 set -o pipefail
-[[ -n ${VERBOSE:-} ]] && set -o xtrace
 
 #@echo off
 
-DIR='.'
-PORT=8000
-BUILD=false
-
 # Usage: ./<script-file>.sh -b <BUILD build image even if it exists> -d <DIR> -e <ENV_FILE> \
 # -i <IMAGE docker image> -p <PORT> -s <true|false, skip run> -v <true|false, verbose>
+
+BUILD=false
+DIR='.'
+PORT=8000
+SKIP_RUN=false
+VERBOSE=false
 
 while getopts b:d:e:i:p:s:v: flag
 do
@@ -27,6 +28,8 @@ do
         *) exit 1;;
     esac
 done
+
+[[ -n ${VERBOSE:-} ]] && set -o xtrace
 
 # By getting the script's dir, we can run the script from any where. 
 function getScriptDir() {
