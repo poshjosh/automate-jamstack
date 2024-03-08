@@ -65,7 +65,7 @@ for f in $(find "$dir" -name "*.$EXT"); do
   if [ "${VERBOSE}" = "true" ] || [ "$VERBOSE" = true ]; then
     printf "\nCreated dir: %s" "$new_dir"
   fi
-  new_file=$(echo "${f%.*}.md" | sed -e "s^[${dir}]^${new_dir}^" -e "s/ /-/g")
+  new_file=$(echo "${f%.*}.md" | sed -e "s^${dir}^${new_dir}^1" -e "s/ /-/g")
   new_filename=$(basename "$new_file")
   new_file="$new_dir/$new_filename"
 
