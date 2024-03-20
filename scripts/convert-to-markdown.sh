@@ -4,27 +4,8 @@ set -euo pipefail
 
 #@echo off
 
-# Usage: ./<script-file>.sh -d <DIR> -e <EXT> -s <true|false, skip run> -v <true|false, verbose>
+# Usage: ./<script-file>.sh -d <DIR> -e <EXT> -f <FILE> -s <true|false, skip run> -v <true|false, verbose>
 
-DIR='.'
-EXT='docx'
-SKIP_CONVERT=false
-VERBOSE=false
-
-while getopts d:e:s:v: flag
-do
-    case "${flag}" in
-        d) DIR=${OPTARG};;
-        e) EXT=${OPTARG};;
-        s) SKIP_CONVERT=${OPTARG};;
-        v) VERBOSE=${OPTARG};;
-        *) exit 1;;
-    esac
-done
-
-[ "${VERBOSE}" = "true" ] || [ "$VERBOSE" = true ] && set -o xtrace
-
-# By getting the script's dir, we can run the script from any where. 
 function getScriptDir() {
   local script_path="${BASH_SOURCE[0]}"
   local script_dir;
@@ -37,9 +18,24 @@ function getScriptDir() {
   cd -P "$(dirname -- "${script_path}")" >/dev/null 2>&1 && pwd
 }
 
-script_dir=$(getScriptDir)
+DIR=$(getScriptDir)
+EXT='docx'
+SKIP_CONVERT=false
+VERBOSE=false
 
-cd "$script_dir" || (echo "Could not change to script directory: $script_dir" && exit 1)
+while getopts d:e:f:s:v: flag
+do
+    case "${flag}" in
+        d) DIR=${OPTARG};;
+        e) EXT=${OPTARG};;
+        f) FILE=${OPTARG};;
+        s) SKIP_CONVERT=${OPTARG};;
+        v) VERBOSE=${OPTARG};;
+        *) exit 1;;
+    esac
+done
+
+[ "${VERBOSE}" = "true" ] || [ "$VERBOSE" = true ] && set -o xtrace
 
 dir="${DIR:-.}"
 
@@ -49,19 +45,27 @@ declare -i convert_count=0
 
 unwanted_prefix="~$"
 
-IFS=$'\n'; set -f
-for f in $(find "$dir" -name "*.$EXT"); do
+function getFileExtension() {
+  filename=$(basename -- "$1")
+  echo "${filename##*.}"
+}
+
+function convertFile() {
+  local f="$1"
   printf "\nSource: %s" "$f"
   filename=$(basename "$f")
   if [[ "$filename" == "$unwanted_prefix"* ]]; then
-    printf "\nSkipping due to unwanted prefix: %s\n" "$f"
-    continue
+    printf "\nSkipping conversion due to unwanted prefix: %s\n" "$f"
+    return
   fi
 
   fdate=$(date -r "$f" "+%Y/%m/%d")
   fdir="blog/$fdate"
-  cd "$dir" || exit 1
-  mkdir -p "$fdir"
+  cd "$dir" || (printf "\nFailed to change to dir: %s\n" "$dir" && exit 1)
+  if [ "${SKIP_CONVERT}" != "true" ] || [ "$SKIP_CONVERT" != true ]; then
+    printf "\nCreating: %s\n" "$dir"
+    mkdir -p "$fdir"
+  fi
   new_dir="$dir/$fdir"
   new_file=$(echo "${f%.*}.md" | sed -e "s^${dir}^${new_dir}^1" -e "s/ /-/g")
   new_filename=$(basename "$new_file")
@@ -69,7 +73,7 @@ for f in $(find "$dir" -name "*.$EXT"); do
 
   printf "\nTarget: %s\n" "$new_file"
   if [ "${SKIP_CONVERT}" = "true" ] || [ "$SKIP_CONVERT" = true ]; then
-    printf "\nSkipping because SKIP is true: %s\n" "$f"
+    printf "\nSkipping conversion because SKIP is true: %s\n" "$f"
   else
     if [[ "$EXT" == "txt" ]]; then
       cp "$f" "${new_file}"
@@ -79,8 +83,18 @@ for f in $(find "$dir" -name "*.$EXT"); do
   fi
 
   convert_count=$((convert_count+1))
-done
-unset IFS; set +f
+}
+
+if [ -z ${FILE+x} ] || [ "$FILE" == '' ]; then
+  IFS=$'\n'; set -f
+  for f in $(find "$dir" -name "*.$EXT"); do
+    convertFile "$f"
+  done
+  unset IFS; set +f
+else
+  EXT=$(getFileExtension "$FILE")
+  convertFile "$FILE"
+fi
 
 printf "\nConverted %s files to markdown" "$convert_count"
 printf "\nSUCCESS\n"
