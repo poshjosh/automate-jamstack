@@ -49,7 +49,7 @@ script_dir=$(getScriptDir)
 cd "$script_dir" || (printf "\nCould not change to script directory: %s" "$script_dir"
                      exit 1)
 
-printf "\nChanging to app directory: %s" "${DIR}"
+printf "\nChanging to app directory: %s\n" "${DIR}"
 
 cd "$DIR" || (printf "\nCould not change to app directory: %s" "$DIR"
               exit 1)
