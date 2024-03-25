@@ -6,20 +6,9 @@ set -euo pipefail
 
 # Usage: ./<script-file>.sh -d <DIR> -e <EXT> -f <FILE> -s <true|false, skip run> -v <true|false, verbose>
 
-function getScriptDir() {
-  local script_path="${BASH_SOURCE[0]}"
-  local script_dir;
-  while [ -L "${script_path}" ]; do
-    script_dir="$(cd -P "$(dirname "${script_path}")" >/dev/null 2>&1 && pwd)"
-    script_path="$(readlink "${script_path}")"
-    [[ ${script_path} != /* ]] && script_path="${script_dir}/${script_path}"
-  done
-  script_path="$(readlink -f "${script_path}")"
-  cd -P "$(dirname -- "${script_path}")" >/dev/null 2>&1 && pwd
-}
-
-DIR=$(getScriptDir)
+DIR=''
 EXT='docx'
+FILE=''
 SKIP_CONVERT=false
 VERBOSE=false
 
@@ -37,9 +26,7 @@ done
 
 [ "${VERBOSE}" = "true" ] || [ "$VERBOSE" = true ] && set -o xtrace
 
-dir="${DIR:-.}"
-
-printf "\nWorking directory: %s\n" "$dir"
+printf "\nWorking directory: %s\n" "$(pwd)"
 
 declare -i convert_count=0
 
@@ -61,13 +48,13 @@ function convertFile() {
 
   fdate=$(date -r "$f" "+%Y/%m/%d")
   fdir="blog/$fdate"
-  cd "$dir" || (printf "\nFailed to change to dir: %s\n" "$dir" && exit 1)
+  cd "$DIR" || (printf "\nFailed to change to dir: %s\n" "$DIR" && exit 1)
   if [ "${SKIP_CONVERT}" != "true" ] || [ "$SKIP_CONVERT" != true ]; then
-    printf "\nCreating: %s\n" "$dir"
+    printf "\nCreating: %s\n" "$fdir"
     mkdir -p "$fdir"
   fi
-  new_dir="$dir/$fdir"
-  new_file=$(echo "${f%.*}.md" | sed -e "s^${dir}^${new_dir}^1" -e "s/ /-/g")
+  new_dir="$DIR/$fdir"
+  new_file=$(echo "${f%.*}.md" | sed -e "s^${DIR}^${new_dir}^1" -e "s/ /-/g")
   new_filename=$(basename "$new_file")
   new_file="$new_dir/$new_filename"
 
@@ -85,13 +72,21 @@ function convertFile() {
   convert_count=$((convert_count+1))
 }
 
-if [ -z ${FILE+x} ] || [ "$FILE" == '' ]; then
+if [ "$FILE" = '' ]; then
+  if [ "$DIR" = '' ]; then
+    DIR='.'
+  fi
+  printf "\nOutput directory: %s\n" "$DIR"
   IFS=$'\n'; set -f
-  for f in $(find "$dir" -name "*.$EXT"); do
+  for f in $(find "$DIR" -name "*.$EXT"); do
     convertFile "$f"
   done
   unset IFS; set +f
 else
+  if [ "$DIR" = '' ]; then
+    DIR=$(dirname "$FILE")
+  fi
+  printf "\nOutput directory: %s\n" "$DIR"
   EXT=$(getFileExtension "$FILE")
   convertFile "$FILE"
 fi

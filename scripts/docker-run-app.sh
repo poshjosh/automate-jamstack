@@ -9,8 +9,23 @@ set -o pipefail
 # Usage: ./<script-file>.sh -b <BUILD build image even if it exists> -d <DIR> -e <ENV_FILE> \
 # -i <IMAGE docker image> -p <PORT> -s <true|false, skip run> -v <true|false, verbose>
 
+# So we can run the script from any where.
+function changeToScriptDir() {
+  local script_path="${BASH_SOURCE[0]}"
+  local script_dir;
+  while [ -L "${script_path}" ]; do
+    script_dir="$(cd -P "$(dirname "${script_path}")" >/dev/null 2>&1 && pwd)"
+    script_path="$(readlink "${script_path}")"
+    [[ ${script_path} != /* ]] && script_path="${script_dir}/${script_path}"
+  done
+  script_path="$(readlink -f "${script_path}")"
+  cd -P "$(dirname -- "${script_path}")" >/dev/null 2>&1 && pwd
+}
+
+changeToScriptDir
+
 BUILD=false
-DIR='.'
+DIR=$(pwd)
 PORT=8000
 SKIP_RUN=false
 VERBOSE=false
@@ -31,28 +46,7 @@ done
 
 [ "${VERBOSE}" = "true" ] || [ "$VERBOSE" = true ] && set -o xtrace
 
-# By getting the script's dir, we can run the script from any where. 
-function getScriptDir() {
-  local script_path="${BASH_SOURCE[0]}"
-  local script_dir;
-  while [ -L "${script_path}" ]; do
-    script_dir="$(cd -P "$(dirname "${script_path}")" >/dev/null 2>&1 && pwd)"
-    script_path="$(readlink "${script_path}")"
-    [[ ${script_path} != /* ]] && script_path="${script_dir}/${script_path}"
-  done
-  script_path="$(readlink -f "${script_path}")"
-  cd -P "$(dirname -- "${script_path}")" >/dev/null 2>&1 && pwd
-}
-
-script_dir=$(getScriptDir)
-
-cd "$script_dir" || (printf "\nCould not change to script directory: %s" "$script_dir"
-                     exit 1)
-
-printf "\nChanging to app directory: %s\n" "${DIR}"
-
-cd "$DIR" || (printf "\nCould not change to app directory: %s" "$DIR"
-              exit 1)
+printf "\nWorking directory: %s\n" "${DIR}"
 
 # Build docker image if it doesn't exist
 
