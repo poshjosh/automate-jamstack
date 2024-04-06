@@ -53,8 +53,8 @@ printf "\nWorking directory: %s\n" "${DIR}"
 docker images | grep "${IMAGE}" && res="y" || res="n"
 
 if [ "$BUILD" = true ] || [ "$BUILD" = "true" ] || [ "${res}" = "n" ]; then
-    printf "\nBuilding image: %s" "${IMAGE}"
-    docker build -t "${IMAGE}" .
+    printf "\nBuilding image: %s\n" "${IMAGE}"
+    docker build -t "${IMAGE}" --progress=plain .
 fi
 
 #           input=IMAGE: poshjosh/liveabove3d-latest
