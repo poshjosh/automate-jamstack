@@ -1,54 +1,38 @@
 #!/usr/bin/env bash
 
-set -o errexit
-set -o nounset
-set -o pipefail
-
-#@echo off
-
-# Usage: ./<script-file>.sh -b <BUILD build image even if it exists> -d <DIR> -e <ENV_FILE> \
-# -i <IMAGE docker image> -p <PORT> -s <true|false, skip run> -v <true|false, verbose>
-
-# So we can run the script from any where.
-function changeToScriptDir() {
-  local script_path="${BASH_SOURCE[0]}"
-  local script_dir;
-  while [ -L "${script_path}" ]; do
-    script_dir="$(cd -P "$(dirname "${script_path}")" >/dev/null 2>&1 && pwd)"
-    script_path="$(readlink "${script_path}")"
-    [[ ${script_path} != /* ]] && script_path="${script_dir}/${script_path}"
-  done
-  script_path="$(readlink -f "${script_path}")"
-  cd -P "$(dirname -- "${script_path}")" >/dev/null 2>&1 && pwd
-}
-
-changeToScriptDir
-
-BUILD=false
-DIR=$(pwd)
-PORT=8000
-SKIP_RUN=false
-VERBOSE=false
-
-while getopts b:d:e:i:p:s:v: flag
-do
-    case "${flag}" in
-        b) BUILD=${OPTARG};;
-        d) DIR=${OPTARG};;
-        e) ENV_FILE=${OPTARG};;
-        i) IMAGE=${OPTARG};;
-        p) PORT=${OPTARG};;
-        s) SKIP_RUN=${OPTARG};;
-        v) VERBOSE=${OPTARG};;
-        *) exit 1;;
-    esac
-done
+set -euo pipefail
 
 [ "${VERBOSE}" = "true" ] || [ "$VERBOSE" = true ] && set -o xtrace
 
+#@echo off
+
+BUILD=${BUILD:-false}
+DIR=${DIR:-$(pwd)}
+PORT=${PORT:-8000}
+SKIP_RUN=${SKIP_RUN:-false}
+VERBOSE=${VERBOSE:-false}
+
+function text_has_content() {
+    if [ ! -z "$1" -a "$1" != "" ]; then
+        echo true
+    else
+        echo false
+    fi
+}
+
+if [ "$(text_has_content "$ENV_FILE")" = false ]; then
+    echo "ERROR ENV_FILE is required" && exit 1
+fi
+
+if [ "$(text_has_content "$IMAGE")" = false ]; then
+    echo "ERROR IMAGE is required" && exit 1
+fi
+
+cd "${DIR}"
+
 printf "\nWorking directory: %s\n" "${DIR}"
 
-# Build docker image if it doesn't exist
+# Build docker image if build=true, or the image doesn't exist
 
 docker images | grep "${IMAGE}" && res="y" || res="n"
 

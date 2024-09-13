@@ -162,7 +162,7 @@ download_and_unzip_into_dir() {
         msg="Unzipping downloaded content into: ${2}"
         debug "${msg}"
 
-        (cd ${2} && unzip -q *.zip) && debug "SUCCESS: $msg" || error ": $msg"
+        (cd ${2} && unzip -q -o *.zip) && debug "SUCCESS: $msg" || error ": $msg"
     fi
 
     emplace_zip_file_content_and_delete_zip_file ${2}

@@ -2,7 +2,7 @@
 
 # Added by me
 app/sites/
-ignore/
+git-ignore/
 
 # ################### Terraform ##################
 
