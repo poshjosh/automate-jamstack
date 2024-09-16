@@ -26,7 +26,7 @@ docker build -t poshjosh/automate-jamstack .
 
 To create a new blog named `my-awesome-blog`:
 
-- Create a properties file in the `/app/sites` directory. The file should be named
+- Create an environment file in the `/app/sites` directory. The file should be named
 after the name of the site you are creating `my-awesome-blog.env`.
 
 ```

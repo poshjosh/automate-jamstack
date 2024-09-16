@@ -7,16 +7,16 @@ if [ "$VERBOSE" = true ]; then
     echo "Changing to directory: $(pwd)/app"
 fi
 
-cd app
+cd app || exit 1
 
 if [ "$VERBOSE" = true ]; then
     ls -a
     echo "-------------------------"
-    echo "cd ./config/setup-scripts" && cd "./config/setup-scripts"
+    echo "cd ./config/setup-scripts" && cd "./config/setup-scripts" || exit 1
     echo "scripts directory: $(pwd)"
     ls -a
     echo "-------------------------"
-    echo "cd .. " && cd .. && echo "cd ./terraform" && cd "./terraform"
+    echo "cd .. " && cd .. && echo "cd ./terraform" && cd "./terraform" || exit 1
     echo "terraform directory: $(pwd)"
     ls -a
     echo "-------------------------"

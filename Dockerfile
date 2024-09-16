@@ -38,6 +38,8 @@ WORKDIR /
 
 COPY ./app/ ./app/
 
+RUN if [ ! -d "./app/sites" ]; then mkdir "app/sites"; fi
+
 RUN (cd ./app/sites && npm install -g gatsby-cli)
 
 RUN chmod +x ./app/config/setup-scripts/docker-entrypoint.sh
