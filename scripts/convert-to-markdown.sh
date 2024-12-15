@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+######################################################################
+# Convert files to markdown
+# Create a directory of format "blog/YYYY/MM/DD" for the output files
+######################################################################
+
 set -euo pipefail
 
 #@echo off
