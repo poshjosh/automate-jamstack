@@ -37,6 +37,8 @@ after the name of the site you are creating `my-awesome-blog.env`.
 
 - Site names are restricted 63 chars of lowercase letters, digits, periods and hyphens.
 
+- Blog post file names should not have spaces; rather use hyphens. For example: `Ten-reasons-to-exercise.md`.
+
 - Copy contents of `/app/config/site-data/default-properties.properties` into
 the properties file (`/app/sites/my-awesome-blog.env`) you just created.
 
@@ -45,13 +47,14 @@ the properties file (`/app/sites/my-awesome-blog.env`) you just created.
 - You need to provide values for at least these properties:
 
 ```dotenv
-AWS_ACCESS_KEY=[VALUE REQUIRED]
-AWS_SECRET_KEY=[VALUE REQUIRED]
-AWS_REGION=[VALUE REQUIRED]
+AWS_ACCESS_KEY="[VALUE REQUIRED]"
+AWS_SECRET_KEY="[VALUE REQUIRED]"
+AWS_REGION="[VALUE REQUIRED]"
 # E.g. https://github.com/[github-user]/[github-repository]/archive/master.zip
-SITE_PAGES_SOURCE=[VALUE REQUIRED]
+SITE_PAGES_SOURCE="[VALUE REQUIRED]"
 # E.g. git+https://github.com/[github-user]/[github-repository].git
-SITE_REPOSITORY_URL=[VALUE REQUIRED]
+SITE_REPOSITORY_URL="[VALUE REQUIRED]"
+SITE_ICON_LOCATION="[VALUE REQUIRED]"
 ```
 
 - From the above, you need a public git repository, from where your site content will be pulled.
@@ -65,29 +68,36 @@ Your site content is hosted in a git repository.
 
 #### Assets ####
 
-Place assets in an assets directory at the root of your site. E.g:
+Place assets in an assets directory at the root of your site. The following assets are supported:
 
 ```
 my-awesome-blog/
 └───assets/
-    └───banner.jpg
-    └───icon.png
+    └───banner.jpg           
+    └───facebook-icon.png      - optional, has a default
+    └───profile-pic.jpg   
+    └───site-icon.png
+    └───twitter-icon.png       - optional, has a default 
 ```
-__Icon__
 
-After adding an icon to your sites assets directory, specify the location of the
+- Stick to these image types: `(jpg|jpeg|png|gif)`.
+
+- Only `site-icon.png` may be renamed.
+
+
+__Site Icon__
+
+After adding a site icon to your sites assets directory, specify the location of the
 icon in the properties file of your site. Note that the location is relative to
-the `SITE_PAGES_DIR` (i.e. `content/blog`) directory. E.g:
+the `content` directory. E.g:
 
 ```dotenv
-SITE_ICON_LOCATION=content/blog/assets/icon.png
-SITE_PAGES_DIR=/content/blog
+SITE_ICON_LOCATION=content/assets/site-icon.png
 ```
 
 __Banner__
 
-You can specify a banner for your site. Simply place either a
-`banner.jpg` or `banner.png` image in the `assets` directory at
+You can specify a banner for your site. Simply place the image in the `assets` directory at
 the root directory of your site.
 
 ### Deploying to Amazon S3 ###
@@ -256,7 +266,7 @@ The following steps will help you customize the website.
 page could interfer with the auto - generation process
 
 - Rename any picture of yourself to `profile-pic.jpg` and place it in the
-`sites/default-site/content/blog` directory, replacing any `profile-pic.jpg` therein.
+`sites/default-site/content/assets` directory, replacing any `profile-pic.jpg` therein.
 
 - Rename you site icon to `site-icon.png` and place it in the `sites/default-site/content/assets` directory replacing any `site-icon.png` therein.
 
