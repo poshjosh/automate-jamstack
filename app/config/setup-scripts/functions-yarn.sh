@@ -9,9 +9,17 @@ pkgmgr_add_plugin() {
     debug "Dev: ${2}, installing plugin: ${1}"
 
     if [ "${2}" = true ]; then
-        (npm install ${1} --save-dev && minstalled=true)
+        if [ "$VERBOSE" = true ]; then
+            (npm install ${1} --legacy-peer-deps --save-dev --loglevel verbose && minstalled=true)
+        else
+            (npm install ${1} --legacy-peer-deps --save-dev && minstalled=true)
+        fi
     else
-        (npm install ${1} && minstalled=true)
+        if [ "$VERBOSE" = true ]; then
+            (npm install ${1} --legacy-peer-deps --loglevel verbose && minstalled=true)
+        else
+            (npm install ${1} --legacy-peer-deps && minstalled=true)
+        fi
     fi
     if [ "${minstalled}" = true ]; then
         debug "SUCCESS installing plugin: ${1}"

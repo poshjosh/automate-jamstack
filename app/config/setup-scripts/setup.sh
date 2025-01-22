@@ -318,7 +318,7 @@ update_pages() {
             add_tableofcontents_to_markdown ${pagesdir} $g_pandoc_template_file
         fi
 
-        debug "Copying assets from ${pagesdir}/assets to ${g_site_assets_dir}"
+        info "Copying assets from ${pagesdir}/assets to ${g_site_assets_dir}"
         # The * should be outside the double quotes
         cp -Rf "${pagesdir}/assets"/* "${g_site_assets_dir}"
     fi

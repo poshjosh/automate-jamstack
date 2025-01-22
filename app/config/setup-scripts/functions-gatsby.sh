@@ -39,7 +39,7 @@ gatsby_develop() {
     # Blocks (i.e nothing after will execute till finishes)
     # Site up and running at localhost
 #    nohup gatsby develop -H 0.0.0.0 -p ${APP_PORT}  WORKED .. but blocks.. nothing after executes
-    (cd ${g_site_dir} && gatsby develop -H 0.0.0.0 -p ${APP_PORT}) # this blocks.. nothing after executes
+    (cd ${g_site_dir} && GATSBY_EXPERIMENTAL_DEV_SSR=true gatsby develop -H 0.0.0.0 -p ${APP_PORT}) # this blocks.. nothing after executes
 }
 
 gatsby_build() {
@@ -72,6 +72,10 @@ gatsby_setup() {
         warn " : Gatsby-cli not installed. Will attempt to install it"
         (cd ${g_site_dir} && pkgmgr_add "gatsby-cli") || exit 1
     fi
+
+    local msg='Cleaning site'
+    debug $msg
+    (cd ${g_site_dir} && gatsby clean && debug "SUCCESS: $msg" || error ": $msg")
 
     if [ "$PROFILE" == 'prod' ]; then
         gatsby_build
