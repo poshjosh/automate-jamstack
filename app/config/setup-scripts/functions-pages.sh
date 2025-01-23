@@ -33,13 +33,96 @@ add_tableofcontents_to_markdown() {
     done
 }
 
+is_article() {
+    local article="|a|an|the|"
+    local candidate=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+    candidate="|${candidate}|"
+    if [[ "$article" == *"${candidate}"* ]]; then
+        echo true
+    else
+        echo false
+    fi
+}
+
+is_conjunction() {
+    local conjunctions="|for|and|nor|but|or|yet|so|"
+    local candidate=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+    candidate="|${candidate}|"
+    if [[ "$conjunctions" == *"${candidate}"* ]]; then
+        echo true
+    else
+        echo false
+    fi
+}
+
+is_preposition() {
+    local prepositions="|about|above|across|after|against|along|among|around|at|before|behind|below|beneath|beside|between|beyond|but|by|despite|down|during|except|for|from|in|inside|into|like|near|of|off|on|onto|out|outside|over|past|since|through|throughout|till|to|toward|under|underneath|until|up|upon|with|within|without|"
+    local candidate=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+    candidate="|${candidate}|"
+    if [[ "$prepositions" == *"${candidate}"* ]]; then
+        echo true
+    else
+        echo false
+    fi
+}
+
+is_pronoun() {
+    local pronouns="|I|you|he|she|it|we|they|me|him|her|us|them|mine|yours|hers|ours|theirs|my|your|his|her|its|our|their|"
+    local candidate=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+    candidate="|${candidate}|"
+    if [[ "$pronouns" == *"${candidate}"* ]]; then
+        echo true
+    else
+        echo false
+    fi
+}
+
+is_grammar() {
+    local article=$(is_article "$1")
+
+    local conjunction=$(is_conjunction "$1")
+
+    local grammar=$(is_preposition "$1")
+
+    local pronoun=$(is_pronoun "$1")
+
+    if [ "$article" = true ] || [ "$conjunction" = true ] || [ "$grammar" = true ] || [ "$pronoun" = true ]; then
+        echo true
+    else
+        echo false
+    fi
+}
+
 convert_title_to_tags()  {
-    local update=$(echo "$1" | sed -e "s/[-_,;:.]/ /g")
-    update=$(echo $update | tr -s ' ')
-    update=$(echo $update | sed -e "s/ /\", \"/g")
-    update="[\"$update\"]"
-    update="$update"
-    echo "$update"
+    local space_seperated
+    space_seperated=$(echo "$1" | sed -e "s/[-_,;:.]/ /g")
+
+    local sentence
+    sentence=$(echo "$space_seperated" | tr -s ' ')
+
+    local words=()
+
+    for candidate in $sentence;
+    do
+        # If the candidate is already in the array, skip it
+        if [[ " ${words[*]} " =~ [[:space:]]${candidate}[[:space:]] ]]; then
+            continue
+        fi
+
+        local grammar
+        grammar=$(is_grammar "$candidate")
+        if [ "$grammar" = true ]; then
+            continue
+        fi
+
+        words+=("$candidate")
+
+    done
+
+    local text
+    text=$(echo "${words[*]}" | sed -e "s/ /\", \"/g")
+
+    echo "[\"$text\"]"
 }
 
 add_frontmatter() {
