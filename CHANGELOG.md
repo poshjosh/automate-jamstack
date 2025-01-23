@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2025-01-23
+
 ### Changed
 
 - Markdown frontmatter tags to exclude articles, prepositions, conjunctions and pronouns as well as duplicates.
