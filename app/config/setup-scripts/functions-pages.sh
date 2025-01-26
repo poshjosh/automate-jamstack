@@ -138,7 +138,7 @@ add_frontmatter() {
         # date and time:  stat -c %y ${1}
         # date only:      stat -c %y ${1} | cut -d ' ' -f 1
         mdate=$(stat -c %z $1 | cut -d ' ' -f 1)
-        trace "Using file last modification date for $1"
+        trace "Using file last modification date for frontmatter of $1"
     else
         local prev=$mdate
         # Replace non digits with dash
@@ -153,12 +153,20 @@ add_frontmatter() {
 
     local mtags=$(convert_title_to_tags "$name_without_ext")
 
-    local frontmatter="---\npath: \"${1}\"\ndate: \"${mdate}\"\ntitle: \"${mtitle}\"\ndescription: \"${SITE_NAME} - ${mtitle}\"\ntags: ${mtags}\nlang: \"en-us\"\n---\n\n"
+    local mlang=$(extract_language $1)
+    if [ -z "$mlang" ]; then
+        mlang="en-us"
+        trace "Using default lang for frontmatter of $1"
+    else
+        mlang=$(echo "$mlang" | tr '[:upper:]' '[:lower:]')
+    fi
+
+    local frontmatter="---\npath: \"${1}\"\ndate: \"${mdate}\"\ntitle: \"${mtitle}\"\ndescription: \"${SITE_NAME} - ${mtitle}\"\ntags: ${mtags}\nlang: \"${mlang}\"\n---\n\n"
 
     trace "Front matter: $frontmatter"
     #log "functions-pages Front matter: $frontmatter"
 
-    sed -i "1s~^~${frontmatter}~" ${1} || error "Failed to add frontmatter"
+    sed -i "1s~^~${frontmatter}~" ${1} || error "Failed to add frontmatter to $1"
 }
 
 # Arg 1 - The file to Search

@@ -98,6 +98,22 @@ extract_date() {
     echo $mfound
 }
 
+# Arg 1 - text to extract 2 chars from
+# Arg 2 - seperator for 2 chars (e.g -) will be applied thus: 2014-10-13-de etc
+extract_two_chars_with_separators() {
+    local regex=$(echo "\b${2}([a-zA-Z]{2})${2}\b")
+    local found=$(echo "$1" | grep -Eo "$regex")
+    echo "${found:1:2}"
+}
+
+extract_language() {
+    local mfound=$(extract_date_having_separator $1 '/')
+    if [ -z "$mfound" ]; then
+        mfound=$(extract_date_having_separator $1 '-')
+    fi
+    echo $mfound
+}
+
 move_dir_content_to_parent() {
     debug "Moving content of current directory up one level"
     info "For next command, IGNORE THIS WARNING -> mv: can't rename '.': Resource busy"
