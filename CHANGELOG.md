@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Google-analytics measurement/tracking id environment variable.
+- Infer language from blog file path and add to frontmatter. 
+- Info about adding HTTPS to README.
+
 ## [0.1.2] - 2025-01-23
 
 ### Changed
