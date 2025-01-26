@@ -66,6 +66,10 @@ run this script: `scripts/quick-run.sh`
 
 Your site content is hosted in a git repository.
 
+#### HTTPS ####
+
+To add https follow [this guide](./docs/Add-ssl-to-website.md)
+
 #### Assets ####
 
 Place assets in an assets directory at the root of your site. The following assets are supported:
@@ -340,6 +344,12 @@ __Logs Enabled__
    on .terraform/modules/s3_website.logs.aws_s3_bucket/main.tf line 29, in resource "aws_s3_bucket" "default":
    29: resource "aws_s3_bucket" "default" {
 ```
+
+__Wrongly displayed title__
+
+- __Example wrongly display title__ `/2025/01/17/ The-life-of-pi` instead of `The life of pi`.
+- __Solution:__ Ensure there are no spaces or other unwanted characters in the file name. 
+  The file name is used to generate the title.
 
 ### References ###
 
