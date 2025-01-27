@@ -11,16 +11,18 @@ find_and_replace_text_in_text() {
     return_value_find_and_replace_text_in_text=$1
 
     if [ -z ${3+x} ] || [ "${3}" == '' ]; then
-        trace "Replacement not available for: ${2} of ${1}"
+        warn "Replacement not available for: ${2} of ${1}"
+        replacement=''
     else
-        #@TODO ensure replacement took place by searching for the variable that
-        # was replaced
-        return_value_find_and_replace_text_in_text=$(echo $1 | sed -e "s^${2}^${3}^g")
-        if [ $return_value_find_and_replace_text_in_text == $1 ]; then
-            trace "No change"
-        else
-            trace "Updated $1 to $return_value_find_and_replace_text_in_text"
-        fi
+        replacement="${3}"
+    fi
+    #@TODO ensure replacement took place by searching for the variable that
+    # was replaced
+    return_value_find_and_replace_text_in_text=$(echo $1 | sed -e "s^${2}^${replacement}^g")
+    if [ $return_value_find_and_replace_text_in_text == $1 ]; then
+        trace "No change"
+    else
+        trace "Updated $1 to $return_value_find_and_replace_text_in_text"
     fi
 }
 
@@ -71,14 +73,17 @@ find_and_replace_env_variables_in_text() {
 find_and_replace_text_in_file() {
 
     if [ -z ${3+x} ] || [ "${3}" == '' ]; then
-        trace "Replacement not available for: ${2}"
+        warn "Replacement not available for: ${2}"
+        replacement=''
     else
-        #@TODO ensure replacement took place by searching for the variable that
-        # was replaced
-        sed -i "s^${2}^${3}^g" $1 \
-            && trace "Updated all ${2} to ${3} in $1" \
-            || trace "No change"
+        replacement="${3}"
     fi
+
+    #@TODO ensure replacement took place by searching for the variable that
+    # was replaced
+    sed -i "s^${2}^${replacement}^g" $1 \
+        && trace "Updated all ${2} to ${replacement} in $1" \
+        || trace "No change"
 }
 
 # arg 1 - Path to a file in which all envirionment variable references will
@@ -210,7 +215,7 @@ custom_find_and_replace_variables_in_file() {
 
     debug "ENTERED custom_find_and_replace_variables_in_file file=$1"
 
-    # We seperate these 2 from the rest to fulfill the following requirement:
+    # We separate these 2 from the rest to fulfill the following requirement:
     #
     # SITE_AUTHOR_SUMMARY must come before SITE_AUTHOR to avoid partial
     # replacement of SITE_AUTHOR_SUMMARY

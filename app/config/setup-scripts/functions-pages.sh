@@ -151,6 +151,14 @@ add_frontmatter() {
     # Convert: The-good,_bad--latest to: The good, bad - latest
     local mtitle=$(echo $name_without_ext | sed -e "s/[-|_]/ /g" -e "s/  / - /g")
 
+    # Remove ![]() used for images in markdown
+    # Also remove double quotes, single quotes, and collapse spaces
+    local mdescr=$(head -c 120 "$1" | sed -e "s/!\[.*)//g" | sed -e "s/\"//g" | sed -e "s/'//g" | tr '\n' ' ' | tr -s ' ')
+    # Remove leading and trailing space chars, as well as windows line endings (\r)
+    mdescr=$(echo "$mdescr" | sed -e 's/^\s*//g' -e 's/*\s$//g' -e 's/\r$//')
+    # Remove all ~ which will be used as delimiter when adding the frontmatter
+    mdescr=$(echo "$mdescr" | sed -e 's/~//g')
+
     local mtags=$(convert_title_to_tags "$name_without_ext")
 
     local mlang=$(extract_language $1)
@@ -161,7 +169,7 @@ add_frontmatter() {
         mlang=$(echo "$mlang" | tr '[:upper:]' '[:lower:]')
     fi
 
-    local frontmatter="---\npath: \"${1}\"\ndate: \"${mdate}\"\ntitle: \"${mtitle}\"\ndescription: \"${SITE_NAME} - ${mtitle}\"\ntags: ${mtags}\nlang: \"${mlang}\"\n---\n\n"
+    local frontmatter="---\npath: \"${1}\"\ndate: \"${mdate}\"\ntitle: \"${mtitle}\"\ndescription: \"${mdescr}\"\ntags: ${mtags}\nlang: \"${mlang}\"\n---\n\n"
 
     trace "Front matter: $frontmatter"
     #log "functions-pages Front matter: $frontmatter"
