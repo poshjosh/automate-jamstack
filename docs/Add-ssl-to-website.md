@@ -35,7 +35,7 @@ Where `<sitename>` is the name of your website.
 able to use the SSL Certificate. Once verified on Route 53, validation status 
 will be shown as success. (_You may need to refresh the page_).
 
-#### CloudFront
+#### Using a content delivery network | CloudFront
 
 Cloudfront is a Content Delivery Network provided by AWS. It is used to deliver 
 content to users around the globe. It caches content to increase performance. 
@@ -89,6 +89,23 @@ or `www.<sitename>.com`.
   * Under `Route traffic to` select `Alias to CloudFront distribution`.
   * In the next input box, select your CloudFront distribution from the dropdown list.
   * Click save.
+
+#### Ensuring Cloudfront always gets the latest version of website | Cloudfront
+
+Cloudfront returns cached version of your website. This means that, if you update your 
+s3 website, that update may not reflect. To ensure that Cloudfront always gets the latest
+version of your website, you need to add an invalidation as follows:
+
+* First go to your AWS CloudFront service.
+
+* Then click on the CloudFront distribution you want to invalidate.
+
+* In the "object path" text field, you can list the specific files e.g. `/index.html` or 
+just use the wildcard `/*` to invalidate all (this forces cloudfront to get the latest 
+from everything in your S3 bucket).
+
+* Once you filled in the text field click on "Invalidate", after CloudFront finishes 
+invalidating you'll see your changes the next time you go to the web page.
 
 
 
