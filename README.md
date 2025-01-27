@@ -79,9 +79,14 @@ my-awesome-blog/
 └───assets/
     └───banner.jpg           
     └───facebook-icon.png      - optional, has a default
+    └───instagram-icon.png     - optional, has a default
+    └───linkedin-icon.png      - optional, has a default
     └───profile-pic.jpg   
+    └───reddit-icon.png        - optional, has a default
     └───site-icon.png
+    └───tiktok-icon.png        - optional, has a default
     └───twitter-icon.png       - optional, has a default 
+    └───youtube-icon.png       - optional, has a default
 ```
 
 - Stick to these image types: `(jpg|jpeg|png|gif)`.

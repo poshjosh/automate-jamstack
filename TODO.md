@@ -1,3 +1,4 @@
+* Why are names with '?' failing. Fail fast or fix names.
 * TEST:
   - re-install
   - Switch VERBOSE=true then false
@@ -24,5 +25,5 @@ OLDPWD
 _
 -------
 
-* Use Node.js or java to do better maninipulation of `package.json` and
+* Use `Node.js` or `python` to do better maninipulation of `package.json` and
 `gatsby-config.js`
