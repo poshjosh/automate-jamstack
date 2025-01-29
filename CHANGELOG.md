@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Extraction of hashtags if available for use as frontmatter tags.
+- Supported language code environment variable.
 - Google-analytics measurement/tracking id environment variable.
 - Infer language from blog file path and add to frontmatter. 
 - Info about adding HTTPS to README.
