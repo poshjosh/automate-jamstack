@@ -93,12 +93,9 @@ is_grammar() {
     fi
 }
 
-convert_title_to_tags()  {
-    local space_seperated
-    space_seperated=$(echo "$1" | sed -e "s/[-_,;:.]/ /g")
+extract_tags_from_sentence()  {
 
-    local sentence
-    sentence=$(echo "$space_seperated" | tr -s ' ')
+    local sentence="$1"
 
     local words=()
 
@@ -122,7 +119,28 @@ convert_title_to_tags()  {
     local text
     text=$(echo "${words[*]}" | sed -e "s/ /\", \"/g")
 
-    echo "[\"$text\"]"
+    if [ ! -z "$text" ] || [ "$text" != '' ]; then
+        echo "[\"$text\"]"
+    fi
+}
+
+extract_tags_from_title()  {
+
+    local space_separated
+    space_separated=$(echo "$1" | sed -e "s/[-_,;:.]/ /g")
+
+    local sentence
+    sentence=$(echo "$space_separated" | tr -s ' ')
+
+    extract_tags_from_sentence "$sentence"
+}
+
+extract_tags_from_file_content() {
+
+    local space_separated
+    space_separated=$(grep -oE '#\w+' "$1" | sed -e "s/^#//" | tr '\n' ' ')
+
+    extract_tags_from_sentence "$space_separated"
 }
 
 add_frontmatter() {
@@ -159,7 +177,10 @@ add_frontmatter() {
     # Remove all ~ which will be used as delimiter when adding the frontmatter
     mdescr=$(echo "$mdescr" | sed -e 's/~//g')
 
-    local mtags=$(convert_title_to_tags "$name_without_ext")
+    local mtags=$(extract_tags_from_file_content "$1")
+    if [ -z "$mtags" ] || [ "$mtags" == '' ]; then
+        mtags=$(extract_tags_from_title "$name_without_ext")
+    fi
 
     local mlang=$(extract_language $1)
     if [ -z "$mlang" ]; then
