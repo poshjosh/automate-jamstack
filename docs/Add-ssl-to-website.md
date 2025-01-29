@@ -94,7 +94,8 @@ or `www.<sitename>.com`.
 
 Cloudfront returns cached version of your website. This means that, if you update your 
 s3 website, that update may not reflect. To ensure that Cloudfront always gets the latest
-version of your website, you need to add an invalidation as follows:
+version of your website, you need to add an invalidation after each update of your website
+as follows:
 
 * First go to your AWS CloudFront service.
 
@@ -107,5 +108,5 @@ from everything in your S3 bucket).
 * Once you filled in the text field click on "Invalidate", after CloudFront finishes 
 invalidating you'll see your changes the next time you go to the web page.
 
-
+Do this after each update of your website.
 
