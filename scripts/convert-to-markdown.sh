@@ -9,20 +9,22 @@ set -euo pipefail
 
 #@echo off
 
-# Usage: ./<script-file>.sh -d <DIR> -e <EXT> -f <FILE> -s <true|false, skip run> -v <true|false, verbose>
+# Usage: ./<SCRIPT_FILE>.sh -d <DIR> -e <EXT> -f <FILE> -s <SKIP_RUN true|false> -v <VERBOSE true|false> -p <PARENT_DIR>
 
 DIR=''
 EXT='docx'
 FILE=''
+PARENT=''
 SKIP_CONVERT=false
 VERBOSE=false
 
-while getopts d:e:f:s:v: flag
+while getopts d:e:f:p:s:v: flag
 do
     case "${flag}" in
         d) DIR=${OPTARG};;
         e) EXT=${OPTARG};;
         f) FILE=${OPTARG};;
+        p) PARENT=${OPTARG};;
         s) SKIP_CONVERT=${OPTARG};;
         v) VERBOSE=${OPTARG};;
         *) exit 1;;
@@ -52,7 +54,7 @@ function convertFile() {
   fi
 
   fdate=$(date -r "$f" "+%Y/%m/%d")
-  fdir="blog/$fdate"
+  fdir="blog/${fdate}${PARENT}"
   cd "$DIR" || (printf "\nFailed to change to dir: %s\n" "$DIR" && exit 1)
   if [ "${SKIP_CONVERT}" != "true" ] || [ "$SKIP_CONVERT" != true ]; then
     printf "\nCreating: %s\n" "$fdir"
