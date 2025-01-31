@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - 2025-01-31
+
+### Fixed
+
+- Bug which resulted to failure if one or more variables were not set.
+- Bug in language code generation for markdown frontmatter.
+
 ## [0.1.3] - 2025-01-29
 
 ### Added

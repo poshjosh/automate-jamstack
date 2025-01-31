@@ -107,9 +107,9 @@ extract_two_chars_with_separators() {
 }
 
 extract_language() {
-    local mfound=$(extract_date_having_separator $1 '/')
+    local mfound=$(extract_two_chars_with_separators $1 '/')
     if [ -z "$mfound" ]; then
-        mfound=$(extract_date_having_separator $1 '-')
+        mfound=$(extract_two_chars_with_separators $1 '-')
     fi
     echo $mfound
 }

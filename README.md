@@ -37,7 +37,10 @@ after the name of the site you are creating `my-awesome-blog.env`.
 
 - Site names are restricted 63 chars of lowercase letters, digits, periods and hyphens.
 
-- Blog post file names should not have spaces; rather use hyphens. For example: `Ten-reasons-to-exercise.md`.
+- Blog post file names:
+
+  - Should not have spaces; rather use hyphens. For example: `Ten-reasons-to-exercise.md`.
+  - Should not have question marks.
 
 - Copy contents of `/app/config/site-data/default-properties.properties` into
 the properties file (`/app/sites/my-awesome-blog.env`) you just created.
