@@ -171,11 +171,15 @@ add_frontmatter() {
 
     # Remove ![]() used for images in markdown
     # Also remove double quotes, single quotes, and collapse spaces
-    local mdescr=$(head -c 120 "$1" | sed -e "s/!\[.*)//g" | sed -e "s/\"//g" | sed -e "s/'//g" | tr '\n' ' ' | tr -s ' ')
+    local mdescr=$(head -c 120 "$1" | sed -e "s/!\[.*)//g" | sed -e 's/"//g' | sed -e "s/'//g" | tr '\n' ' ' | tr -s ' ')
     # Remove leading and trailing space chars, as well as windows line endings (\r)
     mdescr=$(echo "$mdescr" | sed -e 's/^\s*//g' -e 's/*\s$//g' -e 's/\r$//')
     # Remove all ~ which will be used as delimiter when adding the frontmatter
     mdescr=$(echo "$mdescr" | sed -e 's/~//g')
+    if [[ "$mdescr" == *"\""* ]]; then
+      warn "Earlier removed double quotes from description, but it still contains double quotes. This causes errors, so, will use title as description for : $1"
+      mdescr="$mtitle"
+    fi
 
     local mtags=$(extract_tags_from_file_content "$1")
     if [ -z "$mtags" ] || [ "$mtags" == '' ]; then
