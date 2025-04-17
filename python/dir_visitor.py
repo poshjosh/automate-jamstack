@@ -58,6 +58,29 @@ def rename_dir(src_file: str, _, **kwargs):
         print(f"Deleting empty dir: {src_dir}")
         os.rmdir(src_dir)
 
+def delete_dir(src_file: str, _, **kwargs):
+    target = kwargs.get("target")
+    if not target:
+        raise ValueError("Target cannot be none or empty")
+    src_dir = os.path.dirname(src_file)
+    if target in src_dir is False:
+        return
+
+    print(f"Deleting file: {src_file}")
+
+    if kwargs.get("noop", False) is True:
+        print("Noop mode -> will not delete")
+    else:
+        os.remove(src_file)
+
+    last_file = len(os.listdir(src_dir)) == 1
+    if last_file is True:
+        print(f"Deleting empty dir: {src_dir}\n")
+        if kwargs.get("noop", False) is True:
+            print("Noop mode -> will not delete")
+        else:
+            os.rmdir(src_dir)
+
 def print_md(src_file, _):
     print(src_file)
 
@@ -90,7 +113,7 @@ if __name__ == "__main__":
 
     print(f"cwd: {os.getcwd()}")
 
-    project_dir="/Users/chinomso/dev_looseboxes/automate/liveabove3d.com"
+    root_dir="/Users/chinomso/dev_looseboxes/automate/liveabove3d.com"
     markdown_file_test = lambda src_file, _: src_file.endswith(".md") is True
 
     action = translate
@@ -102,5 +125,9 @@ if __name__ == "__main__":
     action = rename_dir
     kwargs = {'target': 'zh-cn', 'replacement': 'zh', 'noop': True}
 
-    visit_dirs(action, project_dir, None, markdown_file_test, **kwargs)
+    root_dir="/Users/chinomso/Desktop/live-above-3D"
+    action = delete_dir
+    kwargs = {'target': 'blog', 'noop': True}
+
+    visit_dirs(action, root_dir, None, markdown_file_test, **kwargs)
 
