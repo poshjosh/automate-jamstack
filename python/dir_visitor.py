@@ -15,8 +15,6 @@ def write_content(content: AnyStr, file_path: str):
         text_file.write(content)
 
 def rename_to_title_case(src_file, _):
-    if src_file.endswith(".md") is False:
-        return
     dirname = os.path.dirname(src_file)
     basename = os.path.basename(src_file)
     if basename[0].isupper() is False:
@@ -25,8 +23,6 @@ def rename_to_title_case(src_file, _):
         os.rename(src_file, title_case)
 
 def rename_without_question_mark(src_file, _, **kwargs):
-    if src_file.endswith(".md") is False:
-        return
     dirname = os.path.dirname(src_file)
     basename = os.path.basename(src_file)
     if str(basename).endswith("?.md"):
@@ -38,9 +34,31 @@ def rename_without_question_mark(src_file, _, **kwargs):
             return
         os.rename(src_file, tgt_file)
 
-def print_md(src_file, _):
-    if src_file.endswith(".md") is False:
+def rename_dir(src_file: str, _, **kwargs):
+    target = kwargs.get("target")
+    replacement = kwargs.get("replacement")
+    if not target or not replacement:
+        raise ValueError("Target and replacement cannot be none or empty")
+    if target not in src_file:
         return
+    tgt_file = src_file.replace(target, replacement)
+    if os.path.exists(tgt_file):
+        print(f"File already exists: {tgt_file}")
+        return
+    print(f"Will rename fm: {src_file}\nwill rename to: {tgt_file}")
+    if kwargs.get("noop", False) is True:
+        print("Noop mode -> will not rename")
+        return
+    tgt_dir = os.path.dirname(tgt_file)
+    if not os.path.exists(tgt_dir):
+        os.makedirs(tgt_dir)
+    os.rename(src_file, tgt_file)
+    src_dir = os.path.dirname(src_file)
+    if len(os.listdir(src_dir)) == 0:
+        print(f"Deleting empty dir: {src_dir}")
+        os.rmdir(src_dir)
+
+def print_md(src_file, _):
     print(src_file)
 
 def visit_dirs(action: Callable[[str, str, dict[str, Any]], None],
@@ -73,12 +91,16 @@ if __name__ == "__main__":
     print(f"cwd: {os.getcwd()}")
 
     project_dir="/Users/chinomso/dev_looseboxes/automate/liveabove3d.com"
+    markdown_file_test = lambda src_file, _: src_file.endswith(".md") is True
 
     action = translate
-    kwargs = {'tgt_langs': "ar,bn,de,es,fr,hi,it,ja,ko,ru,tr,uk,zh-cn".split(",")}
+    kwargs = {'tgt_langs': ['ar','bn','de','es','fr','hi','it','ja','ko','ru','tr','uk','zh']}
 
     action = rename_without_question_mark
     kwargs = {}
 
-#     visit_dirs(action, project_dir, None, None, **kwargs)
+    action = rename_dir
+    kwargs = {'target': 'zh-cn', 'replacement': 'zh', 'noop': True}
+
+    visit_dirs(action, project_dir, None, markdown_file_test, **kwargs)
 

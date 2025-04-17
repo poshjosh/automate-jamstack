@@ -1,7 +1,24 @@
-def relocate_files():
-    NOOP = False
-    project_dir="/Users/chinomso/dev_looseboxes/automate/liveabove3d.com/2025/03"
-    src_day_of_month = "20"
+from translator import translate_file_name
+
+def move(src_file: str, tgt_file: str, **kwargs):
+    if os.path.exists(new_tgt_file) is True:
+        print(f"\tAlready exists: {tgt_file}")
+        return
+    print(f"Will move fm: {src_file}")
+    print(f"Will move to: {tgt_file}")
+    if kwargs.get('noop', False) is True:
+        print("Noop, not moving")
+        return
+    tgt_dir = os.path.dirname(tgt_file)
+    if not os.path.exists(tgt_dir):
+        os.makedirs(tgt_dir)
+    os.rename(src_file, tgt_file)
+
+def relocate_files(files_dir: str, **kwargs):
+    if os.path.isfile(files_dir) is True:
+        raise ValueError(f"Expected directory, got file: {files_dir}")
+    project_dir = os.path.dirname(files_dir)
+    src_day_of_month = os.path.basename(files_dir)
 
     en_dir = os.path.join(project_dir, src_day_of_month, "en")
     en_file_names = os.listdir(en_dir)
@@ -38,7 +55,7 @@ def relocate_files():
             file_name, ext = os.path.splitext(en_file_name)
             en_tgt_file = os.path.join(project_dir, new_day_of_month, "en", en_file_name)
             if src_file != en_tgt_file:
-                move(src_file, en_tgt_file, noop=NOOP)
+                move(src_file, en_tgt_file, **kwargs)
             else:
                 print(f"\tAlready exists, en file: {src_file}")
             for tgt_lang in tgt_langs:
@@ -55,7 +72,7 @@ def relocate_files():
                     unable_to_resolve[en_file_name] = elements
                     continue
                 new_tgt_file = os.path.join(new_tgt_dir, f"{new_file_name}{ext}")
-                move(tgt_file, new_tgt_file, noop=NOOP)
+                move(tgt_file, new_tgt_file, **kwargs)
     finally:
         print("Unable to resolve")
         print(unable_to_resolve)
