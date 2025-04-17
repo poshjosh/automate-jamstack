@@ -16,7 +16,7 @@ have all the above requirements in place.
 We need an SSL certificate to use HTTPS. Fortunately AWS provide these for 
 free - for AWS resources at least.
 
-* You need to create the certificate in the `us-east-1` region.
+* You need to create the certificate in the `us-east-1` region (for this particular setup).
 
 * Go to AWS certificate manager under the `us-east-1` region.
 
