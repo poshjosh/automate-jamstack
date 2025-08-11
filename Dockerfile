@@ -1,5 +1,4 @@
-#FROM pandoc/core:latest-alpine
-FROM node:18-alpine3.18
+FROM node:20.19.4-alpine3.22
 
 LABEL maintainer="https://github.com/poshjosh <posh.bc@gmail.com>"
 
@@ -18,13 +17,13 @@ RUN apk update && apk upgrade \
      	  ca-certificates \
     	  groff \
     	  less \
-        curl \
+          curl \
     	  python3 \
     	  py-pip \
-        unzip \
-        pandoc \
+          unzip \
+          pandoc \
+          aws-cli \
     && rm -rf /var/cache/apk/* \
-    && pip install awscli \
     && aws --version \
     && curl -LO https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
     && unzip '*.zip' -d /usr/local/bin \
